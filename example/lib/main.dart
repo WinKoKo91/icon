@@ -5,6 +5,9 @@ import 'package:flutter/services.dart';
 import 'custom_icons.dart';
 import 'package:icon/icon.dart';
 
+/// Title for this example.
+const _TITLE = 'Icon Example: Using an IconToo';
+
 /// Whatever we would like the icon to be sized to for this example.
 const _ICON_SIZE = 20.0;
 
@@ -27,7 +30,7 @@ class IconExample extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       // debugShowCheckedModeBanner: false,
-      title: 'Icon Example: Using an IconToo',
+      title: _TITLE,
       themeMode: ThemeMode.dark,
       darkTheme: ThemeData.from(
         colorScheme: ColorScheme.fromSwatch(
@@ -92,7 +95,8 @@ class _LandingState extends State<Landing> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('IconToo Example'),
+        title: Text(_TITLE),
+        centerTitle: true,
 
         /// TODO: Show an example where a wrapped series of [Icon]s would overlap
         /// with the occasional non-square IconData; and where the occasional

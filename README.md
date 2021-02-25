@@ -1,6 +1,6 @@
 # 🙋‍♂️ I'm an Icon Too!
 
-## An extended Icon for those that are not actually square. Plus shadows support!
+### An extended Icon for those that are not actually square. Plus shadows support!
 
 ![Screenshot preview of Icon Example app](https://github.com/Zabadam/icon_too/blob/main/doc/IconToo_Example.png?raw=true)
 
