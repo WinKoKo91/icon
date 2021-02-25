@@ -12,34 +12,41 @@ import 'package:flutter/widgets.dart';
 /// #### An extended Icon for those that are not actually square.
 ///
 /// ... because Flutter's native [Icon] ["assumes that the rendered icon is squared."](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L24)
-///
-/// ---
-///     IconToo(IconData icon, {@required Size trueSize, Color color})
-/// Builds an [Icon] set inside a [SizedBox] constrained by [trueSize],
-/// with given data [icon] and optionally passing [color].
-///
-/// ✨ As a bonus, [IconToo] supports the `shadows` parameter from [TextStyle],
-/// passed as `List<Shadow>` and rendered under an [IconToo].
-///
-/// See [Shadow] for more information.
-///
-/// ### Example usage with an [IconButton]:
-/// ```dart
-/// IconButton(
-///   icon: IconToo(
-///     color: Colors.red,
-///     CustomIcons.non_square_icon,
-///     // IconToo passes `fontSize = min(trueSize.width, trueSize.height)` to `TextStyle()`
-///     trueSize: Size(34.0 * 5, 34.0),
-///   ),
-///   // But we need the max() to ensure an IconButton has a diameter that encompasses the entire IconToo
-///   iconSize: 34.0 * 5,
-///   onPressed: () {},
-/// );
-/// ```
-/// An [IconToo] may still have undesirable results if placed in a
-/// [GestureDetector] instead of following the idea above with an [IconButton].
 class IconToo extends Icon {
+  /// ## 🙋‍♂️ I'm an Icon Too!
+  /// #### An extended Icon for those that are not actually square. Plus shadows support!
+  ///
+  /// ... because Flutter's native [Icon] ["assumes that the rendered icon is squared."](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L24)
+  ///
+  /// ---
+  ///     IconToo(IconData icon, {@required Size trueSize, Color color, List<Shadow> shadows})
+  /// Builds an [Icon] set inside a [SizedBox] constrained by [trueSize],
+  /// with given data [icon] and optionally passing [color].
+  ///
+  /// ✨ As a bonus, [IconToo] supports the `shadows` parameter from [TextStyle],
+  /// passed as `List<Shadow>` and rendered under an [IconToo].
+  ///
+  /// See [Shadow] for more information.
+  ///
+  /// #### Replete with proper [Semantics](https://api.flutter.dev/flutter/widgets/Semantics-class.html 'Flutter API: Semantics') and [debug Properties](https://api.flutter.dev/flutter/foundation/DoubleProperty-class.html 'Flutter API: DoubleProperty').
+  /// ---
+  ///
+  /// ### ❓ Example usage with an [IconButton]:
+  /// ```dart
+  /// IconButton(
+  ///   icon: IconToo(
+  ///     color: Colors.red,
+  ///     CustomIcons.non_square_icon,
+  ///     // IconToo passes `fontSize = min(trueSize.width, trueSize.height)` to `TextStyle()`
+  ///     trueSize: Size(34.0 * 5, 34.0),
+  ///   ),
+  ///   // But we need the max() to ensure an IconButton has a diameter that encompasses the entire IconToo
+  ///   iconSize: 34.0 * 5,
+  ///   onPressed: () {},
+  /// );
+  /// ```
+  /// An [IconToo] may still have undesirable results if placed in a
+  /// [GestureDetector] instead of following the idea above with an [IconButton].
   const IconToo(this.icon, {@required this.trueSize, this.color, this.shadows})
       : super(icon);
 

@@ -4,18 +4,24 @@
 
 ![Screenshot preview of Icon Example app](https://github.com/Zabadam/icon_too/blob/main/doc/IconToo_Example.png?raw=true)
 
-... because Flutter's native [Icon] ["assumes that the rendered icon is squared"](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L24) and that ["non-squared icons may render incorrectly."](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L25)
+... because Flutter's native [`Icon`](https://api.flutter.dev/flutter/widgets/Icon-class.html 'Flutter API: Icon') ["assumes that the rendered icon is squared"](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L24) and that ["non-squared icons may render incorrectly."](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L25)
 
 ```dart
-IconToo(IconData icon, {@required Size trueSize, Color color})
+IconToo(IconData icon, {@required Size trueSize, Color color, List<Shadow> shadows})
 ```
 
-Builds an [Icon] set inside a [SizedBox] constrained by [trueSize], with given data [icon] and optionally passing [color].
+* Builds an [`Icon`](https://api.flutter.dev/flutter/widgets/Icon-class.html 'Flutter API: Icon')
+set inside a [`SizedBox`](https://api.flutter.dev/flutter/widgets/SizedBox-class.html 'Flutter API: SizedBox') constrained by [`trueSize`](https://pub.dev/documentation/icon/latest/icon/IconToo/trueSize.html 'Icon API: trueSize'), with given data [`icon`](https://pub.dev/documentation/icon/latest/icon/IconToo/icon.html 'Icon API: icon').
 
-✨ As a bonus, [IconToo] supports the `shadows` parameter from [TextStyle], passed as `List<Shadow>` and rendered under an [IconToo].
-* See [Shadow] for more information.
+* Optionally pass [`color`](https://pub.dev/documentation/icon/latest/icon/IconToo/color.html 'Icon API: color') or [`shadows`](https://pub.dev/documentation/icon/latest/icon/IconToo/shadows.html 'Icon API: shadows').
 
-## Example usage with an [IconButton]:
+ ✨ As a bonus, each IconToo supports the `shadows` parameter from [`TextStyle`](https://api.flutter.dev/flutter/dart-ui/TextStyle-class.html 'Flutter API: TextStyle'), passed as `List<Shadow>` and rendered under an `IconToo`.
+
+ * See [`Shadow`](https://api.flutter.dev/flutter/dart-ui/Shadow-class.html 'Flutter API: Shadow') for more information.
+
+* Replete with proper [`Semantics`](https://api.flutter.dev/flutter/widgets/Semantics-class.html 'Flutter API: Semantics') and [debug `Property`s](https://api.flutter.dev/flutter/foundation/DoubleProperty-class.html 'Flutter API: DoubleProperty').
+
+## ❓ Example usage with an [`IconButton`](https://api.flutter.dev/flutter/material/IconButton-class.html 'Flutter API: IconButton'):
 
 ```dart
 IconButton(
