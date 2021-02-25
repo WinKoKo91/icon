@@ -29,7 +29,7 @@ import 'package:flutter/widgets.dart';
 ///   icon: IconToo(
 ///     color: Colors.red,
 ///     CustomIcons.non_square_icon,
-///     // IconToo passes `iconSize = min(trueSize.width, trueSize.height)` to `Icon(size: iconSize)`
+///     // IconToo passes `fontSize = min(trueSize.width, trueSize.height)` to `TextStyle()`
 ///     trueSize: Size(34.0 * 5, 34.0),
 ///   ),
 ///   // But we need the max() to ensure an IconButton has a diameter that encompasses the entire IconToo
@@ -78,13 +78,13 @@ class IconToo extends Icon {
   @override
   Widget build(BuildContext context) {
     final IconThemeData iconTheme = IconTheme.of(context);
-    Color iconColor = color ?? iconTheme.color;
     final double iconThemeOpacity = iconTheme.opacity;
+    Color iconColor = color ?? iconTheme.color;
     if (iconThemeOpacity != 1.0)
       iconColor = iconColor.withOpacity(iconColor.opacity * iconThemeOpacity);
+
     final double iconWidth = trueSize?.width ?? (iconTheme.size);
     final double iconHeight = trueSize?.height ?? (iconTheme.size);
-
     // 🧮 The minimum of iconWidth and iconHeight to use as
     // fontSize parameter in [RichText].
     final double fontSize = min(iconWidth, iconHeight);

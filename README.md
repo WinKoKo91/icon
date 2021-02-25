@@ -22,7 +22,7 @@ IconButton(
   icon: IconToo(
     color: Colors.red,
     CustomIcons.non_square_icon,
-    // IconToo passes `iconSize = min(trueSize.width, trueSize.height)` to `Icon(size: iconSize)`
+    // IconToo passes `fontSize = min(trueSize.width, trueSize.height)` to `TextStyle()`
     trueSize: Size(34.0 * 5, 34.0),
   ),
   // But we need the max() to ensure an IconButton has a diameter that encompasses the entire IconToo
