@@ -39,6 +39,7 @@ build/app/reports/
 build/app/tmp/
 build/app/outputs/apk/
 build/app/outputs/logs/
+build/app/outputs/mapping/
 
 # Web related
 lib/generated_plugin_registrant.dart

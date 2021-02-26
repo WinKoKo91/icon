@@ -2,22 +2,25 @@
 
 ### An extended Icon for those that are not actually square. Plus shadows support!
 
-![Screenshot preview of Icon Example app](https://github.com/Zabadam/icon_too/blob/main/doc/IconToo_Example.png?raw=true)
+[![Screenshot preview of Icon Example app](https://github.com/Zabadam/icon_too/blob/main/doc/IconToo_Example_thumb.png?raw=true)](https://github.com/Zabadam/icon_too/blob/main/doc/IconToo_Example.png?raw=true 'Fullsize')[![Screenshot preview of Icon Example app](https://github.com/Zabadam/icon_too/blob/main/doc/IconToo_Example_Demo2_thumb.png?raw=true)](https://github.com/Zabadam/icon_too/blob/main/doc/IconToo_Example_Demo2.png?raw=true 'Fullsize')
 
 ... because Flutter's native [`Icon`](https://api.flutter.dev/flutter/widgets/Icon-class.html 'Flutter API: Icon') ["assumes that the rendered icon is squared"](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L24) and that ["non-squared icons may render incorrectly."](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L25)
 
 ```dart
-IconToo(IconData icon, {@required Size trueSize, Color color, List<Shadow> shadows})
+IconToo(IconData icon, {@required Size trueSize, Color color, List<Shadow> shadows, TextDirection textDirection, String semanticLabel})
 ```
+* ***Note:*** `trueSize` parameter is a `Size` and not a `double`.
 
-* Builds an [`Icon`](https://api.flutter.dev/flutter/widgets/Icon-class.html 'Flutter API: Icon')
-set inside a [`SizedBox`](https://api.flutter.dev/flutter/widgets/SizedBox-class.html 'Flutter API: SizedBox') constrained by [`trueSize`](https://pub.dev/documentation/icon/latest/icon/IconToo/trueSize.html 'Icon API: trueSize'), with given data [`icon`](https://pub.dev/documentation/icon/latest/icon/IconToo/icon.html 'Icon API: icon').
+* Builds an [`Icon`](https://api.flutter.dev/flutter/widgets/Icon-class.html 'Flutter API: Icon')-akin widget
+set inside a [`SizedBox`](https://api.flutter.dev/flutter/widgets/SizedBox-class.html 'Flutter API: SizedBox') constrained by [`trueSize`](https://pub.dev/documentation/icon/latest/icon/IconToo/trueSize.html 'Icon API: trueSize'), with given [`icon`](https://pub.dev/documentation/icon/latest/icon/IconToo/icon.html 'Icon API: icon') data.
 
 * Optionally pass [`color`](https://pub.dev/documentation/icon/latest/icon/IconToo/color.html 'Icon API: color') or [`shadows`](https://pub.dev/documentation/icon/latest/icon/IconToo/shadows.html 'Icon API: shadows').
 
- ✨ As a bonus, each IconToo supports the `shadows` parameter from [`TextStyle`](https://api.flutter.dev/flutter/dart-ui/TextStyle-class.html 'Flutter API: TextStyle'), passed as `List<Shadow>` and rendered under an `IconToo`.
+  * ✨ As a bonus, each IconToo supports the `shadows` parameter from [`TextStyle`](https://api.flutter.dev/flutter/dart-ui/TextStyle-class.html 'Flutter API: TextStyle'), passed as `List<Shadow>` and rendered under an `IconToo`.
 
- * See [`Shadow`](https://api.flutter.dev/flutter/dart-ui/Shadow-class.html 'Flutter API: Shadow') for more information.
+  * This is a neat little additional feature, as traditionally an icon shadow might be achieved with [something like this](https://github.com/Zabadam/surface/blob/main/example/lib/main.dart#L290 'Stacked Icons with 1px-differed Offset').
+
+  * See [`Shadow`](https://api.flutter.dev/flutter/dart-ui/Shadow-class.html 'Flutter API: Shadow') for more information.
 
 * Replete with proper [`Semantics`](https://api.flutter.dev/flutter/widgets/Semantics-class.html 'Flutter API: Semantics') and [debug `Property`s](https://api.flutter.dev/flutter/foundation/DoubleProperty-class.html 'Flutter API: DoubleProperty').
 

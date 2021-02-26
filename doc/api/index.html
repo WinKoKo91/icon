@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="generator" content="made with love by dartdoc 0.39.0">
+  <meta name="description" content="icon API docs, for the Dart programming language.">
+  <title>icon - Dart API docs</title>
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="static-assets/github.css">
+  <link rel="stylesheet" href="static-assets/styles.css">
+  <link rel="icon" href="static-assets/favicon.png">
+
+</head>
+
+<body data-base-href=""
+      data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li class="self-crumb">icon package</li>
+  </ol>
+  <div class="self-name">icon</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+      <form class="search-sidebar" role="search">
+        <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+      </form>
+    </header>
+    
+    <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+      <li class="self-crumb">icon package</li>
+    </ol>
+    
+    <h5 class="hidden-xs"><span class="package-name">icon</span> <span class="package-kind">package</span></h5>
+    <ol>
+          <li class="section-title">Libraries</li>
+          <li><a href="icon/icon-library.html">icon</a></li>
+    </ol>
+  </div>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <section class="desc markdown">
+        <h1 id="-im-an-icon-too">🙋‍♂️ I'm an Icon Too!</h1>
+<h3 id="an-extended-icon-for-those-that-are-not-actually-square-plus-shadows-support">An extended Icon for those that are not actually square. Plus shadows support!</h3>
+<p><a href="https://github.com/Zabadam/icon_too/blob/main/doc/IconToo_Example.png?raw=true" title="Fullsize"><img src="https://github.com/Zabadam/icon_too/blob/main/doc/IconToo_Example_thumb.png?raw=true" alt="Screenshot preview of Icon Example app"></a><a href="https://github.com/Zabadam/icon_too/blob/main/doc/IconToo_Example_Demo2.png?raw=true" title="Fullsize"><img src="https://github.com/Zabadam/icon_too/blob/main/doc/IconToo_Example_Demo2_thumb.png?raw=true" alt="Screenshot preview of Icon Example app"></a></p>
+<p>... because Flutter's native <a href="https://api.flutter.dev/flutter/widgets/Icon-class.html" title="Flutter API: Icon"><code>Icon</code></a> <a href="https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L24">"assumes that the rendered icon is squared"</a> and that <a href="https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L25">"non-squared icons may render incorrectly."</a></p>
+<pre class="language-dart"><code class="language-dart">IconToo(IconData icon, {@required Size trueSize, Color color, List&lt;Shadow&gt; shadows, TextDirection textDirection, String semanticLabel})
+</code></pre>
+<ul>
+<li>
+<p><em><strong>Note:</strong></em> <code>trueSize</code> parameter is a <code>Size</code> and not a <code>double</code>.</p>
+</li>
+<li>
+<p>Builds an <a href="https://api.flutter.dev/flutter/widgets/Icon-class.html" title="Flutter API: Icon"><code>Icon</code></a>-akin widget
+set inside a <a href="https://api.flutter.dev/flutter/widgets/SizedBox-class.html" title="Flutter API: SizedBox"><code>SizedBox</code></a> constrained by <a href="https://pub.dev/documentation/icon/latest/icon/IconToo/trueSize.html" title="Icon API: trueSize"><code>trueSize</code></a>, with given <a href="https://pub.dev/documentation/icon/latest/icon/IconToo/icon.html" title="Icon API: icon"><code>icon</code></a> data.</p>
+</li>
+<li>
+<p>Optionally pass <a href="https://pub.dev/documentation/icon/latest/icon/IconToo/color.html" title="Icon API: color"><code>color</code></a> or <a href="https://pub.dev/documentation/icon/latest/icon/IconToo/shadows.html" title="Icon API: shadows"><code>shadows</code></a>.</p>
+<ul>
+<li>
+<p>✨ As a bonus, each IconToo supports the <code>shadows</code> parameter from <a href="https://api.flutter.dev/flutter/dart-ui/TextStyle-class.html" title="Flutter API: TextStyle"><code>TextStyle</code></a>, passed as <code>List&lt;Shadow&gt;</code> and rendered under an <code>IconToo</code>.</p>
+</li>
+<li>
+<p>This is a neat little additional feature, as traditionally an icon shadow might be achieved with <a href="https://github.com/Zabadam/surface/blob/main/example/lib/main.dart#L290" title="Stacked Icons with 1px-differed Offset">something like this</a>.</p>
+</li>
+<li>
+<p>See <a href="https://api.flutter.dev/flutter/dart-ui/Shadow-class.html" title="Flutter API: Shadow"><code>Shadow</code></a> for more information.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Replete with proper <a href="https://api.flutter.dev/flutter/widgets/Semantics-class.html" title="Flutter API: Semantics"><code>Semantics</code></a> and <a href="https://api.flutter.dev/flutter/foundation/DoubleProperty-class.html" title="Flutter API: DoubleProperty">debug <code>Property</code>s</a>.</p>
+</li>
+</ul>
+<h2 id="-example-usage-with-an-iconbuttonhttpsapiflutterdevfluttermaterialiconbutton-classhtml-flutter-api-iconbutton">❓ Example usage with an <a href="https://api.flutter.dev/flutter/material/IconButton-class.html" title="Flutter API: IconButton"><code>IconButton</code></a>:</h2>
+<pre class="language-dart"><code class="language-dart">IconButton(
+  icon: IconToo(
+    color: Colors.red,
+    CustomIcons.non_square_icon,
+    // IconToo passes `fontSize = min(trueSize.width, trueSize.height)` to `TextStyle()`
+    trueSize: Size(34.0 * 5, 34.0),
+  ),
+  // But we need the max() to ensure an IconButton has a diameter that encompasses the entire IconToo
+  iconSize: 34.0 * 5,
+  onPressed: () {},
+);
+</code></pre>
+<h2 id="icon-example-apphttpsgithubcomzabadamicon_tootreemainexample"><a href="https://github.com/Zabadam/icon_too/tree/main/example">Icon Example app</a></h2>
+<p>See some example usage of the Icon package for Flutter included here.</p>
+<ul>
+<li><a href="https://github.com/Zabadam/icon_too/tree/main/example/lib/main.dart">Icon Example Android source</a>: <code>/example/lib/main.dart</code></li>
+<li><a href="https://github.com/Zabadam/icon_too/tree/main/example/build/app/outputs/flutter-apk/app-release.apk">Icon Example APK</a></li>
+</ul>
+      </section>
+      
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="icon">
+            <span class="name"><a href="icon/icon-library.html">icon</a></span>           
+          </dt>
+          <dd>
+            🙋‍♂️ I'm an Icon Too! <a href="icon/icon-library.html">[...]</a>
+          </dd>
+        </dl>
+      </section>
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+
+</main>
+
+<footer>
+  <span class="no-break">
+    icon
+      1.0.0+2
+  </span>
+
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="static-assets/typeahead.bundle.min.js"></script>
+<script src="static-assets/highlight.pack.js"></script>
+<script src="static-assets/script.js"></script>
+
+
+</body>
+
+</html>

@@ -1,24 +1,28 @@
 import 'dart:math';
-
-import 'package:flutter/material.dart';
+import 'dart:ui';
 import 'package:flutter/services.dart';
-import 'custom_icons.dart';
-import 'package:icon/icon.dart';
+import 'package:flutter/material.dart';
 
-/// Title for this example.
+import 'package:icon/icon.dart';
+import 'custom_icons.dart';
+
+/// Title for this example in the AppBar.
 const _TITLE = 'Icon Example: Using an IconToo';
 
-/// Whatever we would like the icon to be sized to for this example.
+/// The non-square icon's presentation height
+/// for this example, utilized in the FABs and TabBar.
 const _ICON_SIZE = 20.0;
 
-/// The IconData used in this example, [CustomIcons.logo_bugbash], is four times
-/// wider than it is tall.
+/// The IconData used in this example, [CustomIcons.logo_bugbash],
+/// is four times wider than it is tall.
 /// Literally, the width of the glyph is 4000 while others typically have a width of 1000.
 const _ICON_WIDTH_RATIO = 4.0;
 
 /// Some constants for basic UI styling.
+const _ICON_OPEN = Icons.note_add_outlined;
+const _ICON_CLOSE = Icons.cancel_outlined;
 const _SHADOWS = [Shadow(offset: Offset(0, 1))];
-const _DURATION = Duration(milliseconds: 600);
+const _DURATION = Duration(milliseconds: 500);
 const _CURVE = Curves.fastOutSlowIn;
 
 void main() {
@@ -51,10 +55,15 @@ class Landing extends StatefulWidget {
   _LandingState createState() => _LandingState();
 }
 
-class _LandingState extends State<Landing> {
+class _LandingState extends State<Landing> with TickerProviderStateMixin {
   double _width, _height;
   int _counter = 0;
   TextStyle _technical, _overline, _headline4, _headline1;
+
+  /// The AppBar leading IconButton toggles the second demo.
+  /// Initialize the IconData value for the button here.
+  /// We will control other stateful UI elements with this value.
+  IconData _demo2Icon = _ICON_OPEN;
 
   /// Because this is a sample app...
   void _incrementCounter() {
@@ -95,17 +104,46 @@ class _LandingState extends State<Landing> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_TITLE),
+        title: Text(
+          _TITLE,
+          style: TextStyle(shadows: _SHADOWS),
+        ),
         centerTitle: true,
+        elevation: (_demo2Icon == _ICON_OPEN) ? 0 : 50,
 
-        /// TODO: Show an example where a wrapped series of [Icon]s would overlap
-        /// with the occasional non-square IconData; and where the occasional
-        /// non-square [IconToo] instead would properly space its neighbors.
+        /// Tapping the AppBar leading button will toggle visibility of
+        /// Demo 2, demonstrating how `IconToo`s will not overlap
+        /// the way normal `Icon`s overlap.
         leading: IconButton(
-          icon: Icon(Icons.note_add_outlined),
-          tooltip:
-              'TODO: Example with wrapped IconToos that do not overlap (Icons do)',
-          onPressed: null,
+          /// This IconToo with default params would be
+          /// visually equivalent to a standard Icon, but
+          /// elect to pass `shadows`.
+          ///
+          /// This is a neat little ✨ additional feature, as traditionally
+          /// an icon shadow might be achieved with something like this:
+          /// https://github.com/Zabadam/surface/blob/main/example/lib/main.dart#L290
+          icon: IconToo(_demo2Icon, shadows: _SHADOWS),
+          tooltip: 'Toggle Demo 2: Wrapping Icons',
+          onPressed: () {
+            if (_demo2Icon == _ICON_OPEN) {
+              setState(() => _demo2Icon = _ICON_CLOSE);
+            } else {
+              setState(() => _demo2Icon = _ICON_OPEN);
+            }
+          },
+        ),
+
+        /// Scaffold TabBar
+        bottom: TabBar(
+          tabs: [
+            Tab(
+                icon: IconToo(
+              CustomIcons.logo_bugbash,
+              trueSize: Size(_ICON_SIZE * _ICON_WIDTH_RATIO, _ICON_SIZE),
+              shadows: _SHADOWS,
+            )),
+          ],
+          controller: TabController(vsync: this, length: 1),
         ),
       ),
 
@@ -116,69 +154,78 @@ class _LandingState extends State<Landing> {
 
         /// 👕 Build Body
         buildBody(),
+
+        /// 2️⃣ Build Demo 2
+        buildDemo2(),
       ]),
 
-      /// FAB
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          /// 🔤
-          exampleFAB(
-            'Icon() 🔻\n IconButton()',
-            _technical,
+      /// Scaffold FAB(s)
+      floatingActionButton: AnimatedOpacity(
+        duration: _DURATION,
+        curve: _CURVE,
+        opacity: (_demo2Icon == _ICON_CLOSE) ? 0 : 1,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            /// 🔤
+            exampleFAB(
+              'Icon() 🔻\n IconButton()',
+              _technical,
 
-            /// 🔘
-            child: exampleIconButton(
-              icon: Icon(
-                CustomIcons.logo_bugbash,
-                size: _ICON_SIZE,
-                color: Colors.white,
+              /// 🔘
+              child: exampleIconButton(
+                icon: Icon(
+                  CustomIcons.logo_bugbash,
+                  size: _ICON_SIZE,
+                  color: Colors.white,
+                ),
+                iconSize: _ICON_SIZE,
+                tooltip:
+                    'Typical experience with non-square Icons within IconButtons',
               ),
-              iconSize: _ICON_SIZE,
-              tooltip:
-                  'Typical experience with non-square Icons within IconButtons',
             ),
-          ),
 
-          /// 🔤
-          exampleFAB(
-            'Icon() 🔻\n ratio\'d IconButton()',
-            _technical,
+            /// 🔤
+            exampleFAB(
+              'Icon() 🔻\n ratio\'d IconButton()',
+              _technical,
 
-            /// 🔘
-            child: exampleIconButton(
-              icon: Icon(
-                CustomIcons.logo_bugbash,
-                size: _ICON_SIZE,
-                color: Colors.white,
+              /// 🔘
+              child: exampleIconButton(
+                icon: Icon(
+                  CustomIcons.logo_bugbash,
+                  size: _ICON_SIZE,
+                  color: Colors.white,
+                ),
+                iconSize: _ICON_SIZE * _ICON_WIDTH_RATIO,
+                tooltip:
+                    'IconButton passed an iconSize larger than Icon, but problem persists',
               ),
-              iconSize: _ICON_SIZE * _ICON_WIDTH_RATIO,
-              tooltip:
-                  'IconButton passed an iconSize larger than Icon, but problem persists',
             ),
-          ),
 
-          /// 🔤
-          exampleFAB(
-            'IconToo() 🔻\n ratio\'d IconButton()',
-            _technical,
+            /// 🔤
+            exampleFAB(
+              'IconToo() 🔻\n ratio\'d IconButton()',
+              _technical,
 
-            /// 🔘
-            child: exampleIconButton(
-              icon: IconToo(
-                CustomIcons.logo_bugbash,
-                trueSize: Size(_ICON_SIZE * _ICON_WIDTH_RATIO, _ICON_SIZE),
-                color: Colors.white,
+              /// 🔘
+              child: exampleIconButton(
+                icon: IconToo(
+                  CustomIcons.logo_bugbash,
+                  trueSize: Size(_ICON_SIZE * _ICON_WIDTH_RATIO, _ICON_SIZE),
+                  color: Colors.white,
 
-                /// ✨ As a bonus, [IconToo] supports the `shadows` parameter
-                /// from [TextStyle].
-                shadows: _SHADOWS,
+                  /// ✨ As a bonus, [IconToo] supports the `shadows` parameter
+                  /// from [TextStyle].
+                  shadows: _SHADOWS,
+                ),
+                iconSize: _ICON_SIZE * _ICON_WIDTH_RATIO,
+                tooltip:
+                    'IconToo extends Icon but provides a trueSize SizedBox',
               ),
-              iconSize: _ICON_SIZE * _ICON_WIDTH_RATIO,
-              tooltip: 'IconToo extends Icon but provides a trueSize SizedBox',
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -188,16 +235,19 @@ class _LandingState extends State<Landing> {
   /// [iconSize] that onPressed calls [_incrementCounter].
   Widget exampleIconButton(
       {@required Icon icon, @required double iconSize, String tooltip}) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(100),
-        color: Colors.black38,
-      ),
-      child: IconButton(
-        icon: icon,
-        iconSize: iconSize,
-        tooltip: tooltip ?? '',
-        onPressed: _incrementCounter,
+    return IgnorePointer(
+      ignoring: (_demo2Icon == _ICON_CLOSE),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(100),
+          color: Colors.black38,
+        ),
+        child: IconButton(
+          icon: icon,
+          iconSize: iconSize,
+          tooltip: tooltip ?? '',
+          onPressed: _incrementCounter,
+        ),
       ),
     );
   }
@@ -231,18 +281,19 @@ class _LandingState extends State<Landing> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'A nice, basic counter example'.toUpperCase(),
-              style: _overline,
-            ),
             RichText(
               text: TextSpan(
-                text: 'Number of ',
-                style: _headline4,
+                text: 'A nice, basic counter example\n'.toUpperCase(),
+                style: _overline,
                 children: [
                   TextSpan(
+                    text: 'Number of ',
+                    style: _headline4,
+                  ),
+                  TextSpan(
                     text: '~',
-                    style: TextStyle(fontFamily: 'BashinBugs-Stripped'),
+                    style: _headline4
+                        .merge(TextStyle(fontFamily: 'BashinBugs-Stripped')),
                   ),
                   TextSpan(text: '\nbutton presses:', style: _headline4),
                 ],
@@ -254,8 +305,7 @@ class _LandingState extends State<Landing> {
               padding: const EdgeInsets.all(25.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(100),
-                color: Colors.accents[Random().nextInt(Colors.accents.length)]
-                    .withOpacity(0.25),
+                color: Theme.of(context).primaryColor.withOpacity(0.25),
                 backgroundBlendMode: BlendMode.difference,
               ),
               child: Text(
@@ -264,22 +314,176 @@ class _LandingState extends State<Landing> {
                       : _counter.toString(),
                   style: _headline1),
             ),
-            Spacer(flex: 1),
+            Spacer(),
             Flexible(
-              flex: 1,
               child: Text(
                 'const _ICON_SIZE = $_ICON_SIZE\nconst _ICON_WIDTH_RATIO = $_ICON_WIDTH_RATIO',
                 style: _technical.copyWith(fontSize: 22),
               ),
             ),
-            Text(
-              'The IconData used in this example, [CustomIcons.logo_bugbash], is four times wider than it is tall. Literally, the width of the glyph is 4000 while others typically have a width of 1000.',
-              style: _overline.copyWith(
-                  letterSpacing: 0.25,
-                  fontSize: 14,
-                  color: const Color(0xDDFFFFFF)),
+            Flexible(
+              child: Text(
+                'The IconData used in this example, [CustomIcons.logo_bugbash], is four times wider than it is tall. Literally, the width of the glyph is 4000 while others typically have a width of 1000.',
+                style: _overline.copyWith(
+                    letterSpacing: 0.25,
+                    fontSize: 14,
+                    color: const Color(0xDDFFFFFF)),
+              ),
             ),
           ]),
+    );
+  }
+
+  /// 2️⃣ Sizes Demo 2 into view according to value of [_demo2Icon]
+  Widget buildDemo2() {
+    const icons = [
+      Icons.ac_unit,
+      Icons.access_alarm,
+      Icons.accessibility,
+      CustomIcons.logo_bugbash,
+      Icons.accessible_forward,
+      Icons.account_balance_wallet,
+      Icons.account_box,
+      Icons.account_tree,
+      Icons.adb,
+      Icons.agriculture,
+      Icons.wine_bar,
+      Icons.whatshot,
+      Icons.weekend,
+      Icons.android,
+      Icons.assistant,
+      CustomIcons.logo_bugbash,
+      Icons.anchor,
+      Icons.all_inclusive,
+      Icons.looks,
+      Icons.local_parking,
+      Icons.design_services
+    ];
+
+    var i = 0; // Icon Key #id
+
+    return Align(
+      alignment: Alignment.topCenter,
+      child: BackdropFilter(
+          filter: (_demo2Icon == _ICON_CLOSE)
+              ? ImageFilter.blur(sigmaX: 5, sigmaY: 5)
+              : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
+          child: Material(
+              color: Theme.of(context).backgroundColor.withOpacity(0.5),
+              animationDuration: _DURATION,
+              elevation: 50,
+              child: InkWell(
+                  highlightColor: Colors.transparent,
+                  splashColor: Theme.of(context).primaryColor.withOpacity(0.75),
+                  onTap: () => setState(() {}),
+                  child: AnimatedContainer(
+                      duration: _DURATION,
+                      curve: _CURVE,
+                      width: _width,
+                      // width: (_demo2Icon == _ICON_CLOSE) ? _width : 0,
+                      height: (_demo2Icon == _ICON_CLOSE) ? _height : 0,
+                      padding: EdgeInsets.all(25),
+                      child: Column(children: [
+                        /// 🛑 Wrapping [Icon]s
+                        Expanded(
+                          flex: 2,
+                          child: RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              text: 'Wrapping ',
+                              style: _headline4,
+                              children: [
+                                TextSpan(
+                                    text: 'Icon',
+                                    style: _technical.copyWith(
+                                        fontSize: _headline4.fontSize)),
+                                TextSpan(
+                                  text: 's\n',
+                                ),
+                                TextSpan(
+                                    text:
+                                        'with intermittent non-square IconData',
+                                    style: _headline4.copyWith(fontSize: 16))
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 5,
+                          child: Wrap(children: [
+                            for (IconData icon in icons)
+                              Icon(
+                                icon,
+                                // color: Colors.white54,
+                                color: Colors.accents[
+                                        Random().nextInt(Colors.accents.length)]
+                                    .withOpacity(0.5),
+                                size: (_demo2Icon == _ICON_CLOSE) ? 50 : 10,
+                                semanticLabel: 'an Icon by Flutter',
+                                key: Key('Icon #${i++}: $icon:'),
+                              )
+                          ]),
+                        ),
+
+                        /// 🆕 Wrapping [IconToo]s
+                        Expanded(
+                          flex: 2,
+                          child: RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              text: 'Wrapping ',
+                              style: _headline4,
+                              children: [
+                                TextSpan(
+                                  text: 'IconToo',
+                                  style: _technical.copyWith(
+                                      fontSize: _headline4.fontSize),
+                                ),
+                                TextSpan(
+                                  text: 's\n',
+                                ),
+                                TextSpan(
+                                  text: 'with intermittent non-square IconData',
+                                  style: _headline4.copyWith(fontSize: 16),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 5,
+                          child: Wrap(children: [
+                            for (IconData icon in icons)
+                              IconToo(
+                                icon,
+                                // color: Colors.white54,
+                                color: Colors.accents[
+                                        Random().nextInt(Colors.accents.length)]
+                                    .withOpacity(0.5),
+                                trueSize: (icon == CustomIcons.logo_bugbash)
+                                    ? Size(50 * _ICON_WIDTH_RATIO, 50)
+                                    : Size(50, 50),
+                                semanticLabel: 'an Icon Too from package Icon',
+                                key: Key('IconToo #${i++}: $icon:'),
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black38,
+                                    blurRadius: 0,
+                                    offset: Offset(1, 1),
+                                  )
+                                ],
+                              )
+                          ]),
+                        ),
+                        Flexible(
+                          child: Text(
+                            '✨ Plus Customizable Shadows!\nTap \'n hold to preview with a brighter background.',
+                            textAlign: TextAlign.center,
+                            style: _overline.copyWith(
+                                letterSpacing: 0.6, shadows: _SHADOWS),
+                          ),
+                        ),
+                      ]))))),
     );
   }
 
