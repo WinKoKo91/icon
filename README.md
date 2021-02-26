@@ -7,7 +7,7 @@
 ... because Flutter's native [`Icon`](https://api.flutter.dev/flutter/widgets/Icon-class.html 'Flutter API: Icon') ["assumes that the rendered icon is squared"](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L24) and that ["non-squared icons may render incorrectly."](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L25)
 
 ```dart
-IconToo(IconData icon, {@required Size trueSize, Color color, List<Shadow> shadows, TextDirection textDirection, String semanticLabel})
+IconToo IconToo(IconData icon, {Size trueSize, Color color, List<Shadow> shadows, TextDirection textDirection, String semanticLabel})
 ```
 * ***Note:*** `trueSize` parameter is a `Size` and not a `double`.
 

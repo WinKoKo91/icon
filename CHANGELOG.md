@@ -1,3 +1,7 @@
+## [1.0.1+3] - 26 FEB 21
+
+* Between 0.1.0 and 1.0.0, parameter `trueSize` had its `@required`ment removed, but the README and documentation did not reflect this.
+
 ## [1.0.0+2] - 25 FEB 21
 
 * Looked back at the base [`Icon`](https://api.flutter.dev/flutter/widgets/Icon-class.html 'Flutter API: Icon') class and recognized that [`IconToo`](https://pub.dev/documentation/icon/latest/icon/IconToo-class.html 'Flutter API: IconToo') ought to support [`TextDirection`](https://api.flutter.dev/flutter/intl/TextDirection-class.html 'Flutter API: TextDirection'), allow a [`Key`](https://api.flutter.dev/flutter/foundation/Key/Key.html 'Flutter API: Key') initialization, and properly accept and pass a [`semanticLabel`](https://pub.dev/documentation/icon/latest/icon/IconToo/semanticLabel.html 'Icon API: semanticLabel').

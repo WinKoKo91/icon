@@ -28,7 +28,7 @@ class IconToo extends Icon {
   /// ... because Flutter's native [Icon] ["assumes that the rendered icon is squared."](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L24)
   ///
   /// ---
-  ///     IconToo(IconData icon, {@required Size trueSize, Color color, List<Shadow> shadows})
+  ///     IconToo(icon, {trueSize, color, shadows, textDirection, semanticLabel})
   /// Builds an [Icon]-akin widget set inside a [SizedBox] constrained by [trueSize],
   /// with given [icon] data and optionally passing [color] or [shadows].
   ///
