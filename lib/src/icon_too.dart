@@ -58,23 +58,30 @@ class IconToo extends Icon {
   /// [GestureDetector] instead of following the idea above with an [IconButton].
   const IconToo(
     this.icon, {
-    Key key,
+    Key? key,
     this.trueSize,
     this.color,
     this.shadows,
     this.textDirection,
     this.semanticLabel,
-  }) : super(icon, key: key);
+  }) : super(
+          icon,
+          key: key,
+          color: color,
+          semanticLabel: semanticLabel,
+          textDirection: textDirection,
+        );
 
   /// #### 🆔 The icon data to display.
   ///
   /// Available Material icons are described in [Icons], but none found
-  /// there are non-square. Only custom icons, such as [CustomIcons]
-  /// found in the IconToo Example app, would contain non-square [IconData].
+  /// there are non-square. Only custom icons, such as [CustomIcons] from
+  /// [custom_icons.dart] found in the IconToo Example app,
+  /// would contain non-square [IconData].
   ///
-  /// The icon can be null, in which case the widget will render as an empty
+  /// The icon ***may*** be `null`, in which case the widget will render as an empty
   /// space of the specified [trueSize] with [Semantics] in place.
-  final IconData icon;
+  final IconData? icon;
 
   /// #### 🧮 The true size to provide as space for the glyph in logical pixels.
   ///
@@ -84,24 +91,24 @@ class IconToo extends Icon {
   /// Defaults to the current [IconTheme] size, if any. If there is no
   /// [IconTheme], or it does not specify an explicit size,
   /// then it defaults to 24.0.
-  final Size trueSize;
+  final Size? trueSize;
 
   /// #### 🎨 [Color] with which to render the [IconToo].
-  final Color color;
+  final Color? color;
 
   /// ✨ As a bonus, [IconToo] supports the `shadows`
   /// parameter from [TextStyle].
   ///
   /// #### Passed as `List<Shadow>` and rendered under an [IconToo].
   /// See [Shadow] for more information.
-  final List<Shadow> shadows;
+  final List<Shadow>? shadows;
 
   /// 💬 This label is *announced* with accessibility modes active
   /// (such as TalkBack or VoiceOver) but not shown in the UI.
   ///
   ///  * Ultimately each IconToo returns a [Semantics].
   ///  * That [SemanticsProperties.label] is passed [semanticLabel] if initialized
-  final String semanticLabel;
+  final String? semanticLabel;
 
   /// ↔ The text direction to use when rendering this IconToo.
   ///
@@ -110,7 +117,7 @@ class IconToo extends Icon {
   /// for coherence with the specification:
   /// * either directly via [textDirection] initialization
   /// * or, if `null`, deafulting to [Directionality].
-  final TextDirection textDirection;
+  final TextDirection? textDirection;
 
   /// 👷‍♂️ Method responsible for laying-out and rendering an [IconToo],
   /// unique from an [Icon] in that the [IconData] may be non-square.
@@ -121,8 +128,8 @@ class IconToo extends Icon {
         textDirection ?? Directionality.of(context);
     final IconThemeData iconTheme = IconTheme.of(context);
 
-    final double iconWidth = trueSize?.width ?? (iconTheme.size);
-    final double iconHeight = trueSize?.height ?? (iconTheme.size);
+    final double iconWidth = trueSize?.width ?? iconTheme.size!;
+    final double iconHeight = trueSize?.height ?? iconTheme.size!;
     // 🧮 The minimum of iconWidth and iconHeight to use as
     // fontSize parameter in [RichText].
     final double fontSize = min(iconWidth, iconHeight);
@@ -130,7 +137,7 @@ class IconToo extends Icon {
     // A standard [Icon] uses its [Icon.size] parameter for
     // both width and height. Even without IconData, an [IconToo]
     // still ought to consider that a [trueSize] may have been initialized
-    // for the Semantics.
+    // for the Semantics and spacing.
     if (icon == null) {
       return Semantics(
         label: semanticLabel,
@@ -138,12 +145,12 @@ class IconToo extends Icon {
       );
     }
 
-    // That null check also occurs before potentially computing
+    // That `null` check also occurs before potentially computing
     // any color or opacity values.
-    final double iconThemeOpacity = iconTheme.opacity;
-    Color iconColor = color ?? iconTheme.color;
+    final double? iconThemeOpacity = iconTheme.opacity;
+    Color? iconColor = color ?? iconTheme.color;
     if (iconThemeOpacity != 1.0)
-      iconColor = iconColor.withOpacity(iconColor.opacity * iconThemeOpacity);
+      iconColor = iconColor!.withOpacity(iconColor.opacity * iconThemeOpacity!);
 
     // As true with standard Icons, the central heart of the
     // widget is a glyph from a font rendered in a RichText.
@@ -151,11 +158,11 @@ class IconToo extends Icon {
       overflow: TextOverflow.visible, // Not that we plan to clip anyway.
       textDirection: iconDirection,
       text: TextSpan(
-        text: String.fromCharCode(icon.codePoint),
+        text: String.fromCharCode(icon!.codePoint),
         style: TextStyle(
           inherit: false,
-          fontFamily: icon.fontFamily,
-          package: icon.fontPackage,
+          fontFamily: icon!.fontFamily,
+          package: icon!.fontPackage,
           fontSize: fontSize,
           color: iconColor,
           shadows: shadows ?? [], // ✨ Bonus List<Shadow> pass!
@@ -165,12 +172,12 @@ class IconToo extends Icon {
 
     // The central RichText may be replaced,
     // so [iconGlyph] returns type Widget.
-    if (icon.matchTextDirection) {
+    if (icon!.matchTextDirection) {
       switch (iconDirection) {
         case TextDirection.rtl:
+          // Mirrors over Y-axis
           iconGlyph = Transform(
-            transform: Matrix4.identity()
-              ..scale(-1.0, 1.0, 1.0), // Mirrors over Y-axis
+            transform: Matrix4.identity()..scale(-1.0, 1.0, 1.0),
             alignment: Alignment.center,
             transformHitTests: false,
             child: iconGlyph,

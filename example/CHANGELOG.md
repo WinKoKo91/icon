@@ -1,3 +1,7 @@
+## [2.0.0+3] - 05 APR 21
+
+* Null-safe Example app.
+
 ## [1.0.0+2] - 25 FEB 21
 
 * Added [Demo 2](https://github.com/Zabadam/icon_too/blob/main/example/lib/main.dart#L114 'AppBar leading icon in Icon Example app'), accessible by the leading AppBar button.

@@ -71,3 +71,5 @@
 !**/ios/**/default.mode2v3
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
+*.stamp
+example/build/app/outputs/flutter-apk/app-debug.apk

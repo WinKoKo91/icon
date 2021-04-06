@@ -18,7 +18,7 @@ set inside a [`SizedBox`](https://api.flutter.dev/flutter/widgets/SizedBox-class
 
   * ✨ As a bonus, each IconToo supports the `shadows` parameter from [`TextStyle`](https://api.flutter.dev/flutter/dart-ui/TextStyle-class.html 'Flutter API: TextStyle'), passed as `List<Shadow>` and rendered under an `IconToo`.
 
-  * This is a neat little additional feature, as traditionally an icon shadow might be achieved with [something like this](https://github.com/Zabadam/surface/blob/main/example/lib/main.dart#L290 'Stacked Icons with 1px-differed Offset').
+  * This is a neat little additional feature, as traditionally an icon shadow might be achieved with [something like this](https://github.com/Zabadam/surface/blob/main/example/lib/main.dart#L384 'Stacked Icons with 1px-differed Offset').
 
   * See [`Shadow`](https://api.flutter.dev/flutter/dart-ui/Shadow-class.html 'Flutter API: Shadow') for more information.
 

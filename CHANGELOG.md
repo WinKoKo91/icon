@@ -1,3 +1,7 @@
+## [2.0.0+4] - 05 APR 21
+
+* Null-safe IconToo.
+
 ## [1.0.1+3] - 26 FEB 21
 
 * Between 0.1.0 and 1.0.0, parameter `trueSize` had its `@required`ment removed, but the README and documentation did not reflect this.
