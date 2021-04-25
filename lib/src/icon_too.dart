@@ -1,26 +1,35 @@
 /// ## 🙋‍♂️ I'm an Icon Too!
-/// #### An extended Icon for those that are not actually square.
+/// An extended Icon for those that are not actually square
+/// --because Flutter's native [Icon] ["assumes that the rendered icon is squared."](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L24)
 ///
-/// ... because Flutter's native [Icon] ["assumes that the rendered icon is squared."](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L24)
-library icon_too;
+/// * Support for `List<Shadow>` as `IconToo.shadows` is available.
+/// * Support for `AlignmentGeometry` as `IconToo.alignment` is available.
+///   - But defaults to `Directionality.of` because it is `trueSize`d by design
+///
+/// ! Note that parameter `IconToo.trueSize` is a `Size` and not a `double`.
+/// - `sizeX` and `sizeY` are available for `const` construction with doubles
+///   - But not forwarded to [Icon]
+library icon;
 
 import 'dart:math';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-/// ## 🙋‍♂️ I'm an [IconToo]!
-/// #### An extended Icon for those that are not actually square.
+/// ## 🙋‍♂️ I'm an Icon Too!
+/// An extended Icon for those that are not actually square
+/// --because Flutter's native [Icon] ["assumes that the rendered icon is squared."](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L24)
 ///
-/// ... because Flutter's native [Icon] ["assumes that the rendered icon is squared."](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L24)
+/// * Support for `List<Shadow>` as `IconToo.shadows` is available.
+/// * Support for `AlignmentGeometry` as `IconToo.alignment` is available.
+///   - But defaults to `Directionality.of` because it is `trueSize`d by design
+///
+/// ! Note that parameter `IconToo.trueSize` is a `Size` and not a `double`.
+/// - `sizeX` and `sizeY` are available for `const` construction with doubles
+///   - But not forwarded to [Icon]
 ///
 /// > ***NOTE:***
-/// > *As a new Dart developer, I am unsure if reimplementing*
-/// > *the functionality of built-in [Icon] within [IconToo] is even*
-/// > *proper practice for a class such as this that extends base [Icon].*
-/// >
-/// > *That said, all the boxes are checked as far as the parameters*
-/// > *that a standard [Icon] looks for and the accesibility & debug*
-/// > *features they offer.*
+/// > *All the boxes are checked as far as the parameters for which a*
+/// > *standard [Icon] looks and the accessibility & debug features they offer.*
 class IconToo extends Icon {
   /// ## 🙋‍♂️ I'm an Icon Too!
   /// #### An extended Icon for those that are not actually square. Plus shadows support!
@@ -30,10 +39,10 @@ class IconToo extends Icon {
   /// ---
   ///     IconToo(icon, {trueSize, color, shadows, textDirection, semanticLabel})
   /// Builds an [Icon]-akin widget set inside a [SizedBox] constrained by [trueSize],
-  /// with given [icon] data and optionally passing [color] or [shadows].
+  /// with given [icon] data and optionally accepting [color] or [shadows].
   ///
-  /// ✨ As a bonus, [IconToo] supports the `shadows` parameter from [TextStyle],
-  /// passed as `List<Shadow>` and rendered under an [IconToo].
+  /// ✨ As a bonus, [IconToo] supports the `shadows` parameter thanks to
+  ///    [TextStyle], accepted as `List<Shadow>` and rendered under an [IconToo].
   ///
   /// See [Shadow] for more information.
   ///
@@ -46,24 +55,27 @@ class IconToo extends Icon {
   ///   icon: IconToo(
   ///     color: Colors.red,
   ///     CustomIcons.non_square_icon,
-  ///     // IconToo passes `fontSize = min(trueSize.width, trueSize.height)` to `TextStyle()`
+  ///     // IconToo passes `fontSize = min(trueSize.width, trueSize.height)`
+  ///     // to glyph-rendering TextStyle:
   ///     trueSize: Size(34.0 * 5, 34.0),
   ///   ),
-  ///   // But we need the max() to ensure an IconButton has a diameter that encompasses the entire IconToo
+  ///   // But we need the max() to ensure an IconButton has a diameter
+  ///   // that encompasses the entire IconToo:
   ///   iconSize: 34.0 * 5,
   ///   onPressed: () {},
   /// );
   /// ```
-  /// An [IconToo] may still have undesirable results if placed in a
-  /// [GestureDetector] instead of following the idea above with an [IconButton].
   const IconToo(
     this.icon, {
     Key? key,
     this.trueSize,
+    this.sizeX,
+    this.sizeY,
     this.color,
     this.shadows,
-    this.textDirection,
+    this.alignment,
     this.semanticLabel,
+    this.textDirection,
   }) : super(
           icon,
           key: key,
@@ -83,25 +95,44 @@ class IconToo extends Icon {
   /// space of the specified [trueSize] with [Semantics] in place.
   final IconData? icon;
 
-  /// #### 🧮 The true size to provide as space for the glyph in logical pixels.
+  /// #### 🧮 Size to provide as space for the glyph in logical pixels.
+  /// Like an [Icon.size] but represents only the resolution of
+  /// this [IconToo] in one axis, `X` or `Y`.
+  ///
+  /// Will be overridden if [trueSize] is assigned a `Size`.
+  final double? sizeX, sizeY;
+
+  /// #### 🧮 True size to provide as space for the glyph in logical pixels.
   ///
   /// [IconToo]s occupy a rectangle with width and height equal to [Size] values
   /// [trueSize.width] and [trueSize.height].
+  ///
+  /// Overrides any assigned [sizeX] or [sizeY].
   ///
   /// Defaults to the current [IconTheme] size, if any. If there is no
   /// [IconTheme], or it does not specify an explicit size,
   /// then it defaults to 24.0.
   final Size? trueSize;
 
-  /// #### 🎨 [Color] with which to render the [IconToo].
+  /// #### 🎨 [Color] with which to draw this [IconToo].
   final Color? color;
 
   /// ✨ As a bonus, [IconToo] supports the `shadows`
-  /// parameter from [TextStyle].
+  /// parameter like [TextStyle],
   ///
-  /// #### Passed as `List<Shadow>` and rendered under an [IconToo].
+  /// #### passed as `List<Shadow>` and rendered under an [IconToo].
+  ///
   /// See [Shadow] for more information.
   final List<Shadow>? shadows;
+
+  /// A standard [Icon] will [Center] its [IconData] glyph in a square [SizedBox].
+  ///
+  /// An [IconToo], by default, will [Alignment.centerLeft] if `LTR`
+  /// or [Alignment.centerRight] if `RTL` its glyph in a [SizedBox] of:
+  ///
+  /// [trueSize] || [sizeX] x [sizeY] ||
+  /// [IconTheme.of]`(Context).size!` x [IconTheme.of]`(Context).size!`
+  final AlignmentGeometry? alignment;
 
   /// 💬 This label is *announced* with accessibility modes active
   /// (such as TalkBack or VoiceOver) but not shown in the UI.
@@ -113,10 +144,10 @@ class IconToo extends Icon {
   /// ↔ The text direction to use when rendering this IconToo.
   ///
   /// This property has no effect if the [icon]'s [IconData.matchTextDirection]
-  /// field is `false`, but an IconToo must always specify a text direction
+  /// field is `false`, but an [IconToo] must always specify a text direction
   /// for coherence with the specification:
   /// * either directly via [textDirection] initialization
-  /// * or, if `null`, deafulting to [Directionality].
+  /// * or, if `null`, deafulting to [Directionality.of].
   final TextDirection? textDirection;
 
   /// 👷‍♂️ Method responsible for laying-out and rendering an [IconToo],
@@ -128,8 +159,8 @@ class IconToo extends Icon {
         textDirection ?? Directionality.of(context);
     final IconThemeData iconTheme = IconTheme.of(context);
 
-    final double iconWidth = trueSize?.width ?? iconTheme.size!;
-    final double iconHeight = trueSize?.height ?? iconTheme.size!;
+    final double iconWidth = trueSize?.width ?? sizeX ?? iconTheme.size!;
+    final double iconHeight = trueSize?.height ?? sizeY ?? iconTheme.size!;
     // 🧮 The minimum of iconWidth and iconHeight to use as
     // fontSize parameter in [RichText].
     final double fontSize = min(iconWidth, iconHeight);
@@ -197,7 +228,10 @@ class IconToo extends Icon {
           width: iconWidth,
           height: iconHeight,
           child: Align(
-            alignment: Alignment.centerLeft,
+            alignment: alignment ??
+                (iconDirection == TextDirection.rtl
+                    ? Alignment.centerRight
+                    : Alignment.centerLeft),
             child: iconGlyph,
           ),
         ),
@@ -205,17 +239,16 @@ class IconToo extends Icon {
     );
   }
 
-  /// 👨‍💻 Following the pattern established in Flutter's [Icon]
+  ///👨‍💻 Following the pattern established in Flutter's [Icon]
   /// but with 'width' and 'height' [DoubleProperty]s instead of 'size'.
-  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(
         IconDataProperty('icon', icon, ifNull: '<empty>', showName: false));
-    properties
-        .add(DoubleProperty('width', trueSize?.width, defaultValue: null));
-    properties
-        .add(DoubleProperty('height', trueSize?.height, defaultValue: null));
+    properties.add(
+        DoubleProperty('width', trueSize?.width ?? sizeX, defaultValue: null));
+    properties.add(DoubleProperty('height', trueSize?.height ?? sizeY,
+        defaultValue: null));
     properties.add(ColorProperty('color', color, defaultValue: null));
   }
 }
