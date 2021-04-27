@@ -1,7 +1,7 @@
 name: icon_example
-description: Example usage of IconToo widget from Icon package.
+description: Example usage of IconToo widget and Icon/Too operator utilities from package:icon.
 publish_to: 'none'
-version: 1.0.0+2
+version: 2.2.0+1
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
@@ -21,6 +21,7 @@ flutter:
   assets:
     - fonts/
   fonts:
+    # Font with custom non-square icon
     - family: BashinBugs-Stripped
       fonts:
         - asset: fonts/BashinBugs-Stripped.otf

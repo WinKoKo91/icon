@@ -1,147 +1,257 @@
 /// ## 🙋‍♂️ I'm an Icon Too!
-/// An extended Icon for those that are not actually square
-/// --because Flutter's native [Icon] ["assumes that the rendered icon is squared."](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L24)
+/// An extended Icon "too" for those that are not actually square,
+/// because Flutter's native `Icon` ["assumes that the rendered icon is squared"](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L24),
+/// plus 👥 `shadows` support.
 ///
-/// * Support for `List<Shadow>` as `IconToo.shadows` is available.
-/// * Support for `AlignmentGeometry` as `IconToo.alignment` is available.
-///   - But defaults to `Directionality.of` because it is `trueSize`d by design
+/// ## 🗜️ IconToo Utilities
+/// 📋 `copyWith`
 ///
-/// ! Note that parameter `IconToo.trueSize` is a `Size` and not a `double`.
-/// - `sizeX` and `sizeY` are available for `const` construction with doubles
-///   - But not forwarded to [Icon]
+/// 👆 "Chevron" `IconToo > (VoidCallback onTap)` ➡ [IconButton]
+///
+/// ➕ "Add" `inflation`
+/// - ❓ `inflation is num`: adds to `sizeX` & `sizeY` the same
+/// - ❓ `inflation is List<num>` (length==2): ramps `X += inflation[0]` & `Y += inflation[1]`
+///
+/// ➖ "Subtract" `deflation`
+/// - ❓ `deflation is num`: subtracts from `sizeX` & `sizeY` the same
+/// - ❓ `deflation is List<num>` (length==2): ramps `X -= deflation[0]` & `Y -= deflation[1]`
+///
+/// ❌ "Multiply" with `operation`
+/// - ❓ `operation is Color`: new `Color`
+/// - ❓ `operation is num`: multiplies `sizeX` & `sizeY` the same
+/// - ❓ `operation is List<num>` (length==2): ramps `X *= operation[0]` & `Y *=operation[1]`
+///
+/// 💥 "Modulate" with `modulation` (randomizer)
+/// - ❓ `modulation is List<Color>` ➡ `color: modulation[Random()]`
+/// - ❓ `modulation is List<num>` ➡ `sizeX *= modulation[Random()]` & `sizeY *= modulation[Random()]` (same `Random`)
+///
+/// 🧦 "And" with `padding`
+/// - ❓ `padding is num` ➡ `EdgeInsets.all(padding)`
+/// - ❓ `padding is List<num>` (length==2) ➡ `EdgeInsets.symmetric(horizontal: padding[0], vertical: padding[1])`
+/// - ❓ `padding is List<num>` (length==4) ➡ `EdgeInsets.fromLTRB(padding[0], padding[1],padding[2], padding[3])`
 library icon;
 
-import 'dart:math';
-import 'package:flutter/rendering.dart';
+import 'dart:math' show Random, min;
+import 'package:flutter/rendering.dart'
+    show DiagnosticPropertiesBuilder, DoubleProperty;
 import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart' show IconButton;
 
 /// ## 🙋‍♂️ I'm an Icon Too!
-/// An extended Icon for those that are not actually square
-/// --because Flutter's native [Icon] ["assumes that the rendered icon is squared."](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L24)
+/// An extended `Icon` "too" for those that are not actually square,
+/// because Flutter's native [Icon] ["assumes that the rendered icon is squared"](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L24),
+/// plus 👥 [shadows] support.
+/// ---
+///     const IconToo(icon, {key, trueSize?, sizeX?, sizeY?, color?, shadows?, alignment?, semanticLabel?, textDirection?})
 ///
-/// * Support for `List<Shadow>` as `IconToo.shadows` is available.
-/// * Support for `AlignmentGeometry` as `IconToo.alignment` is available.
-///   - But defaults to `Directionality.of` because it is `trueSize`d by design
+/// Builds an [Icon]-akin widget set inside a [SizedBox] of
+/// [sizeX] and [sizeY] with given [icon] data.
 ///
-/// ! Note that parameter `IconToo.trueSize` is a `Size` and not a `double`.
-/// - `sizeX` and `sizeY` are available for `const` construction with doubles
-///   - But not forwarded to [Icon]
+/// Customize with 🎨 [color], which defaults to [IconTheme.of],
+/// or optional 👥 [shadows], a `List<Shadow>` like [TextStyle.shadows].
+///
+/// The [AlignmentGeometry] and [textDirection] are handled,
+/// but may be overridden if necessary.
+/// - See [alignment] for more information.
+///
+/// Assumed to be wide, `super` [Icon.size] is assigned [_sizeX] `??` [_sizeY].
+/// - This affects situations that look for an [Icon.size], like [IconButton]
+/// - A solution for taller icons exists: [IconToo.tall]
+///   - Where the only difference is the order of assignment to [Icon.size]: [_sizeY] `??` [_sizeX]
+///
+/// Replete with proper [`Semantics`](https://api.flutter.dev/flutter/widgets/Semantics-class.html 'Flutter API: Semantics') and [debug `Property`s](https://api.flutter.dev/flutter/foundation/DoubleProperty-class.html 'Flutter API: DoubleProperty').
 ///
 /// > ***NOTE:***
 /// > *All the boxes are checked as far as the parameters for which a*
 /// > *standard [Icon] looks and the accessibility & debug features they offer.*
+/// >
+/// > As a design choice, the `super` [Icon] receives `this` [IconToo]'s
+/// initialized `sizeX ?? sizeY` as [Icon.size].
+/// > - First considers the `width` of the icon, and may not always be the
+/// > "longest side" of any potential non-square [IconData].
+///
+/// > ***SEE ALSO:***
+/// > *[Icon], for a description on what an "`Icon`" **is** and*
+/// > *some requirements to deploy that [Widget] or an 🙋‍♂️ [IconToo].*
 class IconToo extends Icon {
-  /// ## 🙋‍♂️ I'm an Icon Too!
-  /// #### An extended Icon for those that are not actually square. Plus shadows support!
+  /// ### 🙋‍♂️ I'm an Icon Too!
+  /// An extended `Icon` "too" for those that are not actually square,
+  /// because Flutter's native [Icon] ["assumes that the rendered icon is squared"](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L24),
+  /// plus 👥 [shadows] support.
+  /// ---
+  ///     const IconToo(icon, {key, trueSize?, sizeX?, sizeY?, color?, shadows?, alignment?, semanticLabel?, textDirection?})
   ///
-  /// ... because Flutter's native [Icon] ["assumes that the rendered icon is squared."](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L24)
+  /// Builds an [Icon]-akin widget set inside a [SizedBox] of
+  /// [sizeX] and [sizeY] with given [icon] data.
+  ///
+  /// Customize with 🎨 [color], which defaults to [IconTheme.of],
+  /// or optional 👥 [shadows], a `List<Shadow>` like [TextStyle.shadows].
+  ///
+  /// The [AlignmentGeometry] and [textDirection] are handled,
+  /// but may be overridden if necessary.
+  /// - See [alignment] for more information.
+  ///
+  /// Assumed to be wide, `super` [Icon.size] is assigned [_sizeX] `??` [_sizeY].
+  /// - This affects situations that look for an [Icon.size], like [IconButton]
+  /// - A solution for taller icons exists: [IconToo.tall]
+  ///   - Where the only difference is the order of assignment to [Icon.size]: [_sizeY] `??` [_sizeX]
+  ///
+  /// Replete with proper [`Semantics`](https://api.flutter.dev/flutter/widgets/Semantics-class.html 'Flutter API: Semantics') and [debug `Property`s](https://api.flutter.dev/flutter/foundation/DoubleProperty-class.html 'Flutter API: DoubleProperty').
   ///
   /// ---
-  ///     IconToo(icon, {trueSize, color, shadows, textDirection, semanticLabel})
-  /// Builds an [Icon]-akin widget set inside a [SizedBox] constrained by [trueSize],
-  /// with given [icon] data and optionally accepting [color] or [shadows].
-  ///
-  /// ✨ As a bonus, [IconToo] supports the `shadows` parameter thanks to
-  ///    [TextStyle], accepted as `List<Shadow>` and rendered under an [IconToo].
-  ///
-  /// See [Shadow] for more information.
-  ///
-  /// #### Replete with proper [`Semantics`](https://api.flutter.dev/flutter/widgets/Semantics-class.html 'Flutter API: Semantics') and [debug `Property`s](https://api.flutter.dev/flutter/foundation/DoubleProperty-class.html 'Flutter API: DoubleProperty').
-  /// ---
-  ///
-  /// ### ❓ Example usage with an [IconButton]:
+  /// ### ❓ [IconToo] as [IconButton]:
   /// ```dart
-  /// IconButton(
-  ///   icon: IconToo(
-  ///     color: Colors.red,
+  /// final wideButton = IconButton(
+  ///   icon: const IconToo(
   ///     CustomIcons.non_square_icon,
-  ///     // IconToo passes `fontSize = min(trueSize.width, trueSize.height)`
-  ///     // to glyph-rendering TextStyle:
-  ///     trueSize: Size(34.0 * 5, 34.0),
+  ///     // IconToo passes `fontSize: min(trueSize.width, trueSize.height)`,
+  ///     // the shortest side (here: height), to glyph-rendering TextStyle:
+  ///     sizeX: 34.0 * 5.0,
+  ///     sizeY: 34.0,
+  ///     // trueSize: DEPRECATED
   ///   ),
-  ///   // But we need the max() to ensure an IconButton has a diameter
-  ///   // that encompasses the entire IconToo:
-  ///   iconSize: 34.0 * 5,
+  ///   // But the max(), or longest side, is needed to ensure an
+  ///   // IconButton has a diameter that encompasses the entire IconToo:
+  ///   iconSize: 34.0 * 5.0, // IconToo.asSize.longestSize
   ///   onPressed: () {},
   /// );
   /// ```
+  /// > ***NOTE:***
+  /// > *All the boxes are checked as far as the parameters for which a*
+  /// > *standard [Icon] looks and the accessibility & debug features they offer.*
+  /// >
+  /// > As a design choice, the `super` [Icon] receives `this` [IconToo]'s
+  /// initialized `sizeX ?? sizeY` as [Icon.size].
+  /// > - First considers the `width` of the icon, and may not always be the
+  /// > "longest side" of any potential non-square [IconData].
+  ///
+  /// > ***SEE ALSO:***
+  /// > *[Icon], for a description on what an "`Icon`" **is** and*
+  /// > *some requirements to deploy that [Widget] or an 🙋‍♂️ [IconToo].*
   const IconToo(
     this.icon, {
     Key? key,
-    this.trueSize,
-    this.sizeX,
-    this.sizeY,
+    @Deprecated(_DEPRECATED) Size? trueSize,
+    double? sizeX,
+    double? sizeY,
     this.color,
     this.shadows,
     this.alignment,
     this.semanticLabel,
     this.textDirection,
-  }) : super(
+  })  : assert((sizeX ?? 0) >= 0 && (sizeY ?? 0) >= 0,
+            'Provide non-negative dimensions.'),
+        _sizeX = sizeX,
+        _sizeY = sizeY,
+        _trueSize = trueSize,
+        super(
           icon,
           key: key,
+          size: sizeX ?? sizeY, // Assumed to be wider ╠░░░░░░░░╣
           color: color,
           semanticLabel: semanticLabel,
           textDirection: textDirection,
         );
 
-  /// #### 🆔 The icon data to display.
+  /// ### 🙋‍♂️ I'm an Icon Too!
+  /// An extended `Icon` "too" for those that are not actually square,
+  /// because Flutter's native [Icon] ["assumes that the rendered icon is squared"](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L24),
+  /// plus 👥 [shadows] support.
+  /// ---
+  /// This [IconToo] is dictated to be taller than it is wide.
+  ///
+  /// The default constructor assumes a non-square icon (though the [icon] *may*
+  /// be square) is "wider" by assigning `super` [Icon.size]: `sizeX ?? sizeY`.
+  ///
+  /// The only difference in this [IconToo.tall]
+  /// is the order of assignment: `sizeY ?? sizeX`.
+  ///
+  /// See default constructor [IconToo] for more information.
+  const IconToo.tall(
+    this.icon, {
+    Key? key,
+    @Deprecated(_DEPRECATED) Size? trueSize,
+    double? sizeX,
+    double? sizeY,
+    this.color,
+    this.shadows,
+    this.alignment,
+    this.semanticLabel,
+    this.textDirection,
+  })  : assert((sizeX ?? 0) >= 0 && (sizeY ?? 0) >= 0,
+            'Provide non-negative dimensions.'),
+        _sizeX = sizeX,
+        _sizeY = sizeY,
+        _trueSize = trueSize,
+        super(
+          icon,
+          key: key,
+          size: sizeY ?? sizeX, // Dictated as taller ╠░╣
+          color: color,
+          semanticLabel: semanticLabel,
+          textDirection: textDirection,
+        );
+
+  /// 🆔 The icon data to display.
   ///
   /// Available Material icons are described in [Icons], but none found
-  /// there are non-square. Only custom icons, such as [CustomIcons] from
-  /// [custom_icons.dart] found in the IconToo Example app,
+  /// there are non-square. Only custom icons, such as `CustomIcons` from
+  /// [`custom_icons.dart`](///../example/lib/custom_icons.dart)  found in the IconToo Example app,
   /// would contain non-square [IconData].
   ///
-  /// The icon ***may*** be `null`, in which case the widget will render as an empty
-  /// space of the specified [trueSize] with [Semantics] in place.
+  /// The icon ***may*** be `null`, in which case this [Widget]
+  /// will render as an empty space of the specified 🧮 [trueSize]
+  /// (or [sizeX] x [sizeY]) with [Semantics] in place.
   final IconData? icon;
 
-  /// #### 🧮 Size to provide as space for the glyph in logical pixels.
-  /// Like an [Icon.size] but represents only the resolution of
-  /// this [IconToo] in one axis, `X` or `Y`.
+  /// 🧮 True size to provide as space for the glyph in logical pixels.
+  /// May be `null`. Private field may be set during construction by `trueSize`.
   ///
-  /// Will be overridden if [trueSize] is assigned a `Size`.
-  final double? sizeX, sizeY;
+  /// See [sizeX] and [sizeY].
+  @Deprecated(_DEPRECATED)
+  final Size? _trueSize;
 
-  /// #### 🧮 True size to provide as space for the glyph in logical pixels.
+  /// 🧮 Size in logical pixels to provide as space
+  /// for this `IconToo` in one axis. May be `null`.
+  /// Private field may be set during construction by `sizeX` / `sizeY`.
   ///
-  /// [IconToo]s occupy a rectangle with width and height equal to [Size] values
-  /// [trueSize.width] and [trueSize.height].
-  ///
-  /// Overrides any assigned [sizeX] or [sizeY].
-  ///
-  /// Defaults to the current [IconTheme] size, if any. If there is no
-  /// [IconTheme], or it does not specify an explicit size,
-  /// then it defaults to 24.0.
-  final Size? trueSize;
+  /// See [sizeX] and [sizeY].
+  final double? _sizeX, _sizeY;
 
-  /// #### 🎨 [Color] with which to draw this [IconToo].
+  /// 🎨 [Color] with which to draw this [icon] glyph.
+  ///
+  /// This [IconToo] will default its [color] according to [IconTheme.of].
   final Color? color;
 
-  /// ✨ As a bonus, [IconToo] supports the `shadows`
-  /// parameter like [TextStyle],
+  /// 👥 This [IconToo] may have `shadows` rendered underneath
+  /// like [TextStyle].
   ///
-  /// #### passed as `List<Shadow>` and rendered under an [IconToo].
-  ///
-  /// See [Shadow] for more information.
+  /// Accepts `List<Shadow>`. See [Shadow] for more information.
   final List<Shadow>? shadows;
 
-  /// A standard [Icon] will [Center] its [IconData] glyph in a square [SizedBox].
+  /// 🔛 This [IconToo  will side-align its glyph
+  /// according to ambient or assigned [textDirection].
   ///
-  /// An [IconToo], by default, will [Alignment.centerLeft] if `LTR`
-  /// or [Alignment.centerRight] if `RTL` its glyph in a [SizedBox] of:
+  /// Considering it is also [trueSize]d by design,
+  /// default should be a desirable result,
+  /// but override this value if necessary.
+  /// - For example, because an initialized [_sizeX] is the value
+  ///   provided to `super` [Icon.size], manual setting could arise
+  ///   as a solution to some unforeseen issue.
+  /// - Furthermore, an [IconToo.tall] is dictated as taller rather than wider.
   ///
-  /// [trueSize] || [sizeX] x [sizeY] ||
-  /// [IconTheme.of]`(Context).size!` x [IconTheme.of]`(Context).size!`
+  /// A standard [Icon] centers its [IconData] glyph in a square [SizedBox],
+  /// which is the root issue for non-square [icon]s.
   final AlignmentGeometry? alignment;
 
   /// 💬 This label is *announced* with accessibility modes active
-  /// (such as TalkBack or VoiceOver) but not shown in the UI.
+  /// (such as TalkBack or VoiceOver) but *not shown* in the UI.
   ///
-  ///  * Ultimately each IconToo returns a [Semantics].
-  ///  * That [SemanticsProperties.label] is passed [semanticLabel] if initialized
+  ///  * Ultimately this `IconToo` is wrapped in a [Semantics].
+  ///  * That [SemanticsProperties.label] is given [semanticLabel], if initialized.
   final String? semanticLabel;
 
-  /// ↔ The text direction to use when rendering this IconToo.
+  /// 🔚 The text direction to use when rendering this [IconToo].
   ///
   /// This property has no effect if the [icon]'s [IconData.matchTextDirection]
   /// field is `false`, but an [IconToo] must always specify a text direction
@@ -150,24 +260,55 @@ class IconToo extends Icon {
   /// * or, if `null`, deafulting to [Directionality.of].
   final TextDirection? textDirection;
 
+  /// 🧮 Horizontal size in logical pixels to provide as space for this `IconToo`.
+  ///
+  /// Unlike an [Icon.size] this `double` only represents
+  /// the resolution of in one axis, `X`.
+  ///
+  /// Gets [_trueSize.width] if initialized,
+  /// otherwise gets [_sizeX] if assigned. May be `null`.
+  ///
+  /// Rendered [IconToo] defaults to the current [IconTheme.of] size,
+  /// if any, itself defaulting to `24.0`.
+  double? get sizeX => _trueSize?.width ?? _sizeX;
+
+  /// 🧮 Vertical size in logical pixels to provide as space for this `IconToo`.
+  ///
+  /// Unlike an [Icon.size] this `double` only represents
+  /// the resolution of in one axis, `Y`.
+  ///
+  /// Gets [_trueSize.height] if initialized,
+  /// otherwise gets [_sizeY] if assigned. May be `null`.
+  ///
+  /// Rendered [IconToo] defaults to the current [IconTheme.of] size,
+  /// if any, itself defaulting to `24.0`.
+  double? get sizeY => _trueSize?.height ?? _sizeY;
+
+  /// 🧮 Returns this [IconToo]'s size as a [Size] with
+  /// width equal to [sizeX], or `0` if `null`,
+  /// and height equal to [sizeY], or `0` if `null`.
+  ///
+  /// [Size] objects have a few handy getters and methods.
+  Size get asSize => Size(sizeX ?? 0, sizeY ?? 0);
+
   /// 👷‍♂️ Method responsible for laying-out and rendering an [IconToo],
-  /// unique from an [Icon] in that the [IconData] may be non-square.
+  /// unique from an [Icon] in that [icon] may be non-square and [shadows]
+  /// parameter is accepted.
   @override
   Widget build(BuildContext context) {
+    assert(_trueSize == null || !(_trueSize!.isEmpty));
     assert(this.textDirection != null || debugCheckHasDirectionality(context));
     final TextDirection iconDirection =
         textDirection ?? Directionality.of(context);
     final IconThemeData iconTheme = IconTheme.of(context);
 
-    final double iconWidth = trueSize?.width ?? sizeX ?? iconTheme.size!;
-    final double iconHeight = trueSize?.height ?? sizeY ?? iconTheme.size!;
-    // 🧮 The minimum of iconWidth and iconHeight to use as
-    // fontSize parameter in [RichText].
-    final double fontSize = min(iconWidth, iconHeight);
+    final double iconWidth = sizeX ?? iconTheme.size!;
+    final double iconHeight = sizeY ?? iconTheme.size!;
+    final double fontSize = min(iconWidth, iconHeight); // shortest side
 
-    // A standard [Icon] uses its [Icon.size] parameter for
-    // both width and height. Even without IconData, an [IconToo]
-    // still ought to consider that a [trueSize] may have been initialized
+    // A standard Icon uses its `size` field for
+    // both width and height. Even without IconData, an IconToo
+    // still ought to consider that a `trueSize` may have been initialized
     // for the Semantics and spacing.
     if (icon == null) {
       return Semantics(
@@ -176,39 +317,38 @@ class IconToo extends Icon {
       );
     }
 
-    // That `null` check also occurs before potentially computing
-    // any color or opacity values.
+    // Checked `icon == null` before continuing with any other computation.
     final double? iconThemeOpacity = iconTheme.opacity;
     Color? iconColor = color ?? iconTheme.color;
     if (iconThemeOpacity != 1.0)
       iconColor = iconColor!.withOpacity(iconColor.opacity * iconThemeOpacity!);
 
-    // As true with standard Icons, the central heart of the
-    // widget is a glyph from a font rendered in a RichText.
+    // In the context of Icons, IconButtons, and IconData,
+    // the "icon" itself is a character code for a specific font.
     Widget iconGlyph = RichText(
-      overflow: TextOverflow.visible, // Not that we plan to clip anyway.
+      overflow: TextOverflow.visible, // Even though we're `trueSize`d ;)
       textDirection: iconDirection,
       text: TextSpan(
         text: String.fromCharCode(icon!.codePoint),
         style: TextStyle(
           inherit: false,
-          fontFamily: icon!.fontFamily,
           package: icon!.fontPackage,
+          fontFamily: icon!.fontFamily,
           fontSize: fontSize,
           color: iconColor,
-          shadows: shadows ?? [], // ✨ Bonus List<Shadow> pass!
+          shadows: shadows ?? const [], // optional 👥 List<Shadow>
         ),
       ),
     );
 
-    // The central RichText may be replaced,
-    // so [iconGlyph] returns type Widget.
+    // Wrap iconGlyph in a Transform and flip if the IconData thus dictates.
+    // Hover over / see: `matchTextDirection`.
     if (icon!.matchTextDirection) {
       switch (iconDirection) {
         case TextDirection.rtl:
           // Mirrors over Y-axis
           iconGlyph = Transform(
-            transform: Matrix4.identity()..scale(-1.0, 1.0, 1.0),
+            transform: Matrix4.identity()..scale(-1.0, 1.0, 1.0), // scales X
             alignment: Alignment.center,
             transformHitTests: false,
             child: iconGlyph,
@@ -219,8 +359,8 @@ class IconToo extends Icon {
       }
     }
 
-    // Just as with an Icon, construct a SizedBox but Align the glyph
-    // centerLeft instead of Center.
+    // TrueSized by design, this IconToo will side-align considering TextDirection.
+    // A standard Icon center-aligns, which is the issue for non-square IconData.
     return Semantics(
       label: semanticLabel,
       child: ExcludeSemantics(
@@ -239,16 +379,197 @@ class IconToo extends Icon {
     );
   }
 
-  ///👨‍💻 Following the pattern established in Flutter's [Icon]
-  /// but with 'width' and 'height' [DoubleProperty]s instead of 'size'.
+  ///👨‍💻 Adds `width` and `height` to existing [Icon] props.
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(
-        IconDataProperty('icon', icon, ifNull: '<empty>', showName: false));
-    properties.add(
-        DoubleProperty('width', trueSize?.width ?? sizeX, defaultValue: null));
-    properties.add(DoubleProperty('height', trueSize?.height ?? sizeY,
-        defaultValue: null));
-    properties.add(ColorProperty('color', color, defaultValue: null));
+    properties.add(DoubleProperty('width', sizeX, defaultValue: null));
+    properties.add(DoubleProperty('height', sizeY, defaultValue: null));
   }
+
+  // ____________________________
+  // ## 🗜️ IconToo Utilities
+  // - 📋 `copyWith` optional replacement values
+  /// - 👆 `operator >(VoidCallback onTap)` ➡ [IconButton]
+  // - ➕ `operator +(inflate)` ➡ `sizeX += inflation` & `sizeY += inflation`
+  // - ➖ `operator -(deflate)` ➡ `sizeX -= deflation` & `sizeY -= deflation`
+  // - ❌ `operator *(dynamic operation)`
+  //   - ❓ `operation is Color` ➡ `color = operation`
+  //   - ❓ `operation is num` ➡ `sizeX *= operation` & `sizeY *= operation`
+  //   - ❓ `operation is List<num>` ➡ `sizeX *= operation[0]` & `sizeY *= operation[1]`
+  // - 💥 `operator %(dynamic modulation)`
+  //   - ❓ `modulation is List<Color>` ➡ `color = modulation[Random()]`
+  //   - ❓ `modulation is List<num>` ➡ `sizeX *= modulation[random]` & `sizeY *= modulation[random]`
+  // - 🧦 `operator &(dynamic padding)`
+  //   - ❓ `padding is num` ➡ `EdgeInsets.all(padding)`
+  //   - ❓ `padding is List<num>` (length==2) ➡ `EdgeInsets.symmetric(horizontal: padding[0], vertical: padding[1])`
+  //   - ❓ `padding is List<num>` (length==4) ➡ `EdgeInsets.fromLTRB(padding[0], padding[1],padding[2], padding[3])`
+  // ____________________________
+
+  /// 📋 Return an [IconToo] with fields that mirror `this`
+  /// except for the parameters given with this method.
+  ///
+  /// Follows same pattern as [IconToo] in that a [Size] provided
+  /// [trueSize] will override `num`s [sizeX] and [sizeY].
+  IconToo copyWith({
+    Key? key,
+    IconData? icon,
+    Size? trueSize,
+    double? sizeX,
+    double? sizeY,
+    Color? color,
+    List<Shadow>? shadows,
+    AlignmentGeometry? alignment,
+    String? semanticLabel,
+    TextDirection? textDirection,
+  }) =>
+      IconToo(
+        icon ?? this.icon,
+        key: key ?? this.key, // should ignore this.key?
+        sizeX: trueSize?.width ?? sizeX ?? this.sizeX,
+        sizeY: trueSize?.height ?? sizeY ?? this.sizeY,
+        color: color ?? this.color,
+        shadows: shadows ?? this.shadows,
+        alignment: alignment ?? this.alignment,
+        semanticLabel: semanticLabel ?? this.semanticLabel,
+        textDirection: textDirection ?? this.textDirection,
+      );
+
+  /// ## ➕ "Add" to this [IconToo]
+  ///     IconToo operator +(dynamic inflation)
+  /// Returns `this` [IconToo] if [operation] does not match a case
+  /// described below, otherwise [copyWith] size incremented by [inflation].
+  ///
+  /// ➕ `operator +(dynamic` [inflation]`)`
+  /// - ❓ [inflation] `is` [num] ➡ `sizeX += inflation` & `sizeY += inflation`
+  /// - ❓ [inflation] `is List<num>` (length==2) ➡ `sizeX += inflation[0]` & `sizeY += inflation[1]`
+  IconToo operator +(dynamic inflation) => (inflation is num)
+      ? copyWith(
+          sizeX: (sizeX ?? 0.0) + inflation, sizeY: (sizeY ?? 0.0) + inflation)
+      : (inflation is List<num>)
+          ? (inflation.length == 2)
+              ? copyWith(
+                  sizeX: (sizeX ?? 0.0) + inflation[0],
+                  sizeY: (sizeY ?? 0.0) + inflation[1],
+                )
+              : this
+          : this;
+
+  /// ## ➖ "Subtract" from this [IconToo]
+  ///     IconToo operator -(dynamic inflation)
+  /// Returns `this` [IconToo] if [operation] does not match a case
+  /// described below, otherwise [copyWith] size decremented by [deflation].
+  ///
+  /// ➖ `operator -(dynamic` [deflation]`)`
+  /// - ❓ [deflation] `is` [num] ➡ `sizeX -= deflation` & `sizeY -= deflation`
+  /// - ❓ [deflation] `is List<num>` (length==2) ➡ `sizeX -= deflation[0]` & `sizeY -= deflation[1]`
+  IconToo operator -(dynamic deflation) => (deflation is num)
+      ? copyWith(
+          sizeX: (sizeX ?? 0.0) - deflation, sizeY: (sizeY ?? 0.0) - deflation)
+      : (deflation is List<num>)
+          ? (deflation.length == 2)
+              ? copyWith(
+                  sizeX: (sizeX ?? 0.0) - deflation[0],
+                  sizeY: (sizeY ?? 0.0) - deflation[1],
+                )
+              : this
+          : this;
+
+  /// ## ❌ "Multiply" this [IconToo] Randomly
+  ///     IconToo operator *(dynamic operation)
+  /// Returns `this` [IconToo] if [operation] does not match a case described below.
+  ///
+  /// ❌ `operator *(dynamic` [operation]`)`
+  /// - ❓ [operation] `is` [Color] ➡ `color = operation`
+  /// - ❓ [operation] `is` [num] ➡ `sizeX *= operation` & `sizeY *= operation`
+  /// - ❓ [operation] `is List<num>` (length==2) ➡ `sizeX *= operation[0]` & `sizeY *= operation[1]`
+  IconToo operator *(dynamic operation) => (operation is Color)
+      ? copyWith(color: operation)
+      : (operation is num)
+          ? copyWith(
+              sizeX: (sizeX ?? 0.0) * operation,
+              sizeY: (sizeY ?? 0.0) * operation)
+          : (operation is List<num>)
+              ? (operation.length == 2)
+                  ? copyWith(
+                      sizeX: (sizeX ?? 0.0) * operation[0],
+                      sizeY: (sizeY ?? 0.0) * operation[1],
+                    )
+                  : this
+              : this;
+
+  /// ## 💥 "Modulate" this [IconToo]
+  ///     IconToo operator %(dynamic modulation)
+  /// Returns `this` [IconToo] if [modulation] does not match a case described below.
+  ///
+  /// 💥 `operator *(dynamic` [modulation]`)`
+  /// - ❓ [modulation] `is List<Color>` ➡ `color = modulation[Random()]`
+  /// - ❓ [modulation] `is List<num>` ➡ `sizeX *= modulation[random]` & `sizeY *= modulation[random]`
+  IconToo operator %(dynamic modulation) {
+    if (!(modulation is List) || modulation.isEmpty) return this;
+    final random = Random().nextInt(modulation.length);
+
+    return (modulation is List<Color>)
+        ? copyWith(color: modulation[random])
+        : (modulation is List<num>)
+            ? copyWith(
+                sizeX: (sizeX ?? 0.0) * modulation[random],
+                sizeY: (sizeY ?? 0.0) * modulation[random],
+              )
+            : this;
+  }
+
+  /// ## 🧦 "And" this [IconToo]
+  ///     IconToo operator &(dynamic padding)
+  /// Returns `this` [IconToo] if [padding] does not match a case described below.
+  ///
+  /// 🧦 `operator &(dynamic` [padding]`)`
+  /// - ❓ [padding] `is num` ➡ `EdgeInsets.all(padding)`
+  /// - ❓ [padding] `is List<num>` (length==2) ➡ `EdgeInsets.symmetric(horizontal: padding[0], vertical: padding[1])`
+  /// - ❓ [padding] `is List<num>` (length==4) ➡ `EdgeInsets.fromLTRB(padding[0], padding[1],padding[2], padding[3])`
+  Widget operator &(dynamic padding) => (padding is num)
+      ? Padding(
+          padding: EdgeInsets.all(padding > 0 ? padding * 1.0 : 0), child: this)
+      : (padding is List<num>)
+          ? (padding.length == 2)
+              ? Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: padding[0] > 0 ? padding[0] * 1.0 : 0,
+                      vertical: padding[0] > 0 ? padding[0] * 1.0 : 0),
+                  child: this,
+                )
+              : (padding.length == 4)
+                  ? Padding(
+                      padding: EdgeInsets.fromLTRB(
+                          padding[0] > 0 ? padding[0] * 1.0 : 0,
+                          padding[1] > 0 ? padding[1] * 1.0 : 0,
+                          padding[2] > 0 ? padding[2] * 1.0 : 0,
+                          padding[3] > 0 ? padding[3] * 1.0 : 0),
+                      child: this,
+                    )
+                  : this
+          : this;
+
+  /// ## 👆 "Chevron" this [IconToo]
+  ///     IconToo operator >(VoidCallback onTap)
+  /// Returns `this` [IconToo] wrapped in an [IconButton]
+  /// with [asSize] `longestSide` for [IconButton.iconSize].
+  /// Color is forwarded as well.
+  ///
+  /// Parameter following the `greater-than` symbol is a [Function]
+  /// of type [VoidCallback].
+  ///
+  /// ```dart
+  /// final IconToo icon = IconToo(Icons.arrow_back, sizeX: 40, sizeY: 40);
+  /// // Whoa! `operator >(onTap)` method 😏
+  /// final IconButton button = icon * Colors.red > () => setState(() {});
+  /// ```
+  IconButton operator >(VoidCallback onTap) => IconButton(
+        icon: this,
+        iconSize: asSize.longestSide,
+        color: color,
+        onPressed: onTap,
+      );
 }
+
+const _DEPRECATED =
+    '`Size` dimensions not usable in const constructor. Migrate to doubles `sizeX` & `sizeY`. Gives `IconToo` objects source-of-truth for `Icon.size`: assigned `_sizeX ?? _sizeY`';

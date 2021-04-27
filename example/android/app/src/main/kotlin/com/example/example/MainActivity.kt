@@ -1,4 +1,4 @@
-package app.zaba.icon.example
+package app.zaba.icon
 
 import io.flutter.embedding.android.FlutterActivity
 

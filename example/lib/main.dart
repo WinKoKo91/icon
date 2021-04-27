@@ -1,225 +1,228 @@
-import 'dart:math';
-import 'dart:ui';
-import 'package:flutter/services.dart';
+/// ## 🙋‍♂️ I'm an Icon Too!
+/// This example is heavily (overly?) documented.
+///
+/// Hover over many terms in the code to see a description or explanation,
+/// and [`Ctrl`]+[`Click`] to goto the definition (in most editors; maybe [`F12`]).
+library icon_example;
+
+import 'dart:math' show Random;
+import 'dart:ui' show ImageFilter;
+import 'package:flutter/services.dart' show DeviceOrientation, SystemChrome;
 import 'package:flutter/material.dart';
 
 import 'package:icon/icon.dart';
 import 'custom_icons.dart';
-
-/// Title for this example in the AppBar.
-const _TITLE = 'Icon Example: Using an IconToo';
+import 'icon_list.dart';
+import 'demo3.dart';
 
 /// The non-square icon's presentation height
 /// for this example, utilized in the FABs and TabBar.
-const _ICON_SIZE = 20.0;
+const ICON_SIZE = 20.0;
 
-/// The IconData used in this example, [CustomIcons.logo_bugbash],
-/// is four times wider than it is tall.
-/// Literally, the width of the glyph is 4000 while others typically have a width of 1000.
-const _ICON_WIDTH_RATIO = 4.0;
+/// Title for this example in the AppBar.
+const TITLE = 'Icon Example: Using an IconToo';
 
-/// Some constants for basic UI styling.
-const _ICON_OPEN = Icons.note_add_outlined;
-const _ICON_CLOSE = Icons.cancel_outlined;
-const _SHADOWS = [Shadow(offset: Offset(0, 1))];
-const _DURATION = Duration(milliseconds: 500);
-const _CURVE = Curves.fastOutSlowIn;
+/// This [IconData] represents the state of Demo 2 being hidden
+/// and is an open icon.
+const DEMO2_IS_CLOSED = Icons.note_add_outlined;
 
-void main() {
-  runApp(IconExample());
-}
+/// This [IconData] represents the state of Demo 2 being shown
+/// and is a close icon.
+const DEMO2_IS_OPEN = Icons.cancel_outlined;
 
+/// Constant for UI styling.
+const DURATION = Duration(milliseconds: 500);
+
+/// Constant for UI styling.
+const CURVE = Curves.fastOutSlowIn;
+
+void main() => runApp(IconExample());
+
+/// This class is a [StatelessWidget] that, when built,
+/// returns a [MaterialApp] with given properties.
+///
+/// The [MaterialApp.home] field defines the home page, [Landing].
 class IconExample extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      // debugShowCheckedModeBanner: false,
-      title: _TITLE,
-      themeMode: ThemeMode.dark,
-      darkTheme: ThemeData.from(
-        colorScheme: ColorScheme.fromSwatch(
+  Widget build(BuildContext context) => MaterialApp(
+        // debugShowCheckedModeBanner: false,
+        title: TITLE,
+        home: const Landing(),
+        themeMode: ThemeMode.dark,
+        darkTheme: ThemeData.from(
+          colorScheme: ColorScheme.fromSwatch(
             primarySwatch: Colors.red,
-            backgroundColor: const Color(0xFF550000)),
-      ).copyWith(
-        textTheme: ThemeData(brightness: Brightness.dark).textTheme,
-      ),
-      home: Landing(),
-    );
-  }
+            backgroundColor: const Color(0xFF550000),
+          ),
+        ).copyWith(textTheme: ThemeData(brightness: Brightness.dark).textTheme),
+      );
 }
 
+/// This class is a [StatefulWidget] that creates a [State],
+/// [LandingState], when Flutter requests it.
 class Landing extends StatefulWidget {
-  Landing({Key? key}) : super(key: key);
-
-  @override
-  _LandingState createState() => _LandingState();
+  const Landing({Key? key}) : super(key: key);
+  LandingState createState() => LandingState();
 }
 
-class _LandingState extends State<Landing> with TickerProviderStateMixin {
-  int _counter = 0;
-
-  /// Because this is a sample app...
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  late double _width, _height;
-  late TextStyle _technical, _overline, _headline4, _headline1;
+/// This class is a [State] with [Type] of [Landing],
+/// `with` the mixin [TickerProviderStateMixin]
+/// in order to accommodate a [TabBar] for its [Scaffold].
+///
+/// Like a [MaterialApp], a [Scaffold] is used less frequently than
+/// other styling [Widgets]--generally once per "page" or "view".
+class LandingState extends State<Landing> with TickerProviderStateMixin {
+  /// These TextStyles are initialized `late`r, once this `LandingState` is built.
+  late TextStyle technical, overline, headline4, headline1;
+  // These doubles are provided the width and height of the screen `late`r.
+  late double width, height;
 
   /// The AppBar leading IconButton toggles the second demo.
   /// Initialize the IconData value for the button here.
+  ///
   /// We will control other stateful UI elements with this value.
-  IconData _demo2Icon = _ICON_OPEN;
+  IconData demo2Icon = DEMO2_IS_CLOSED;
 
-  @override
+  /// Because this is a sample app...
+  int _counter = 0;
+
+  /// Because this is a sample app...
+  void incrementCounter() => setState(() => _counter++);
+
   Widget build(BuildContext context) {
-    /// Force portrait orientation.
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
+    // Force portrait orientation.
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    // Store display resolution.
+    width = MediaQuery.of(context).size.width;
+    height = MediaQuery.of(context).size.height;
 
-    /// Store display resolution each time this [_LandingState] is built.
-    _width = MediaQuery.of(context).size.width;
-    _height = MediaQuery.of(context).size.height;
-
-    /// Shortcut some [TextStyle]s.
-    _technical = Theme.of(context).textTheme.subtitle2!.copyWith(
+    /// Shortcut some `TextStyle`s that originate from `Theme.of`
+    overline = Theme.of(context).textTheme.overline!.copyWith(shadows: SHADOWS);
+    technical = Theme.of(context).textTheme.subtitle2!.copyWith(
           fontFamily: 'serif',
           fontWeight: FontWeight.bold,
-          shadows: _SHADOWS,
+          shadows: SHADOWS,
           fontSize: 10,
         );
-    _overline = Theme.of(context).textTheme.overline!.copyWith(
-          shadows: _SHADOWS,
-        );
-    _headline4 = Theme.of(context).textTheme.headline4!.copyWith(
-          shadows: _SHADOWS,
+    headline1 = Theme.of(context).textTheme.headline1!.copyWith(
+          shadows: SHADOWS,
           color: const Color(0xFFFFFFFF),
         );
-    _headline1 = Theme.of(context).textTheme.headline1!.copyWith(
-          shadows: _SHADOWS,
+    headline4 = Theme.of(context).textTheme.headline4!.copyWith(
+          shadows: SHADOWS,
           color: const Color(0xFFFFFFFF),
         );
 
+    /// Return this built `LandingState`.
     return Scaffold(
+      body: Stack(children: [
+        buildBackground(),
+        buildBody(),
+        maybeBuildDemo2(), // This build methods checks the value of `demo2Icon`.
+      ]),
+
       appBar: AppBar(
-        title: Text(
-          _TITLE,
-          style: TextStyle(shadows: _SHADOWS),
-        ),
         centerTitle: true,
-        elevation: (_demo2Icon == _ICON_OPEN) ? 0 : 50,
+        title: const Text(TITLE, style: TextStyle(shadows: SHADOWS)),
+        elevation: (demo2Icon == DEMO2_IS_CLOSED) ? 0 : 50,
 
-        /// Tapping the AppBar leading button will toggle visibility of
-        /// Demo 2, demonstrating how `IconToo`s will not overlap
-        /// the way normal `Icon`s overlap.
+        // Tapping the AppBar leading button will toggle the IconData for
+        // `demo2Icon` which is used to toggle visibility of Demo 2.
         leading: IconButton(
-          /// This IconToo with default params would be
-          /// visually equivalent to a standard Icon, but
-          /// elect to pass `shadows`.
-          ///
-          /// This is a neat little ✨ additional feature, as traditionally
-          /// an icon shadow might be achieved with something like this:
-          /// https://github.com/Zabadam/surface/blob/main/example/lib/main.dart#L290
-          icon: IconToo(_demo2Icon, shadows: _SHADOWS),
+          // This IconToo with default params would be visually equivalent
+          // to a standard Icon, but elect to pass 👥 `shadows`.
+          icon: IconToo(demo2Icon, shadows: SHADOWS),
           tooltip: 'Toggle Demo 2: Wrapping Icons',
-          onPressed: () {
-            if (_demo2Icon == _ICON_OPEN) {
-              setState(() => _demo2Icon = _ICON_CLOSE);
-            } else {
-              setState(() => _demo2Icon = _ICON_OPEN);
-            }
-          },
+          onPressed: () => setState(() => demo2Icon =
+              // If it is one IconData, make it the other.
+              (demo2Icon == DEMO2_IS_OPEN) ? DEMO2_IS_CLOSED : DEMO2_IS_OPEN),
         ),
 
-        /// Scaffold TabBar
+        actions: [
+          IconButton(
+            icon: IconToo(demo2Icon, shadows: SHADOWS),
+            tooltip: 'Toggle Demo 2: Wrapping Icons',
+            onPressed: () => Navigator.push(
+                context, MaterialPageRoute(builder: (_) => const Demo3())),
+          )
+        ],
+
         bottom: TabBar(
           controller: TabController(vsync: this, length: 1),
           tabs: [
             Tab(
               icon: IconToo(
                 CustomIcons.logo_bugbash,
-                trueSize: Size(_ICON_SIZE * _ICON_WIDTH_RATIO, _ICON_SIZE),
-                shadows: _SHADOWS,
+                sizeX: ICON_SIZE * ICON_WIDTH_RATIO,
+                sizeY: ICON_SIZE,
+                shadows: SHADOWS,
               ),
-            ),
+            )
           ],
         ),
       ),
 
-      /// Scaffold Body
-      body: Stack(children: [
-        /// 🌆 Build Background
-        _buildBackground(),
-
-        /// 👕 Build Body
-        _buildBody(),
-
-        /// 2️⃣ Build Demo 2
-        _buildDemo2(),
-      ]),
-
-      /// 🔤 Scaffold FAB(s)
+      // 🔤 Floating Action Buttons demonstrating the alignment and
+      // sizing issues of non-square IconData in traditional Icons.
       floatingActionButton: AnimatedOpacity(
-        duration: _DURATION,
-        curve: _CURVE,
-        opacity: (_demo2Icon == _ICON_CLOSE) ? 0 : 1,
+        duration: DURATION,
+        curve: CURVE,
+        opacity: (demo2Icon == DEMO2_IS_OPEN) ? 0 : 1,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildFAB(
-              'Icon() 🔻\n IconButton()',
-              textStyle: _technical,
-
-              /// 🔘 Pass [Icon] to [IconButton]
-              child: _buildIconButton(
-                icon: Icon(
+            // 🔘 `Icon` for `IconButton` with shortest-side `iconSize`
+            // * Broken.
+            buildFAB(
+              label: 'Icon 🔻\nIconButton\nShortest Side',
+              textStyle: technical,
+              child: buildIconButton(
+                icon: const Icon(
                   CustomIcons.logo_bugbash,
-                  size: _ICON_SIZE,
+                  size: ICON_SIZE,
                   color: Colors.white,
                 ),
-                iconSize: _ICON_SIZE,
+                // Provide shortest-side [iconSize]; result is left-edge of
+                // icon is centered in a circle too small to fit anyway.
+                iconSize: ICON_SIZE,
                 tooltip:
-                    'Typical experience with non-square Icons within IconButtons',
+                    'Typical experience with non-square Icons in IconButtons',
               ),
             ),
-            _buildFAB(
-              'Icon() 🔻\n ratio\'d IconButton()',
-              textStyle: _technical,
 
-              /// 🔘 Pass [Icon] to [IconButton] with largest-side [iconSize]
-              child: _buildIconButton(
-                icon: Icon(
+            // 🔘 `Icon` for `IconButton` with longest-side `iconSize`
+            // * Broken.
+            buildFAB(
+              label: 'Icon 🔻\nIconButton\nLongest Side',
+              textStyle: technical,
+              child: buildIconButton(
+                icon: const Icon(
                   CustomIcons.logo_bugbash,
-                  size: _ICON_SIZE,
+                  size: ICON_SIZE,
                   color: Colors.white,
                 ),
-                iconSize: _ICON_SIZE * _ICON_WIDTH_RATIO,
+                // Provide longest-side [iconSize]; result is left-edge of
+                // icon is centered in a circle wide enough to fit.
+                iconSize: ICON_SIZE * ICON_WIDTH_RATIO,
                 tooltip:
                     'IconButton passed an iconSize larger than Icon, but problem persists',
               ),
             ),
-            _buildFAB(
-              'IconToo() 🔻\n ratio\'d IconButton()',
-              textStyle: _technical,
 
-              /// 🔘 Pass [IconToo] to [IconButton]
-              child: _buildIconButton(
-                icon: IconToo(
+            // 🔘 `IconToo` for `IconButton` with longest-side `iconSize`
+            // * Works!.
+            buildFAB(
+              label: 'IconToo 🔻\nIconButton\nLongest Side',
+              textStyle: technical,
+              child: buildIconButton(
+                icon: const IconToo(
                   CustomIcons.logo_bugbash,
-                  trueSize: Size(_ICON_SIZE * _ICON_WIDTH_RATIO, _ICON_SIZE),
+                  sizeX: ICON_SIZE * ICON_WIDTH_RATIO, sizeY: ICON_SIZE,
                   color: Colors.white,
-
-                  /// ✨ As a bonus, [IconToo] supports the `shadows` parameter
-                  /// from [TextStyle].
-                  shadows: _SHADOWS,
+                  shadows: SHADOWS, // 👥 `shadows` bonus!
                 ),
-
-                /// Provide the largest-side as [iconSize],
-                /// result will be a circle with icon centered
-                iconSize: _ICON_SIZE * _ICON_WIDTH_RATIO,
+                // Provide longest-side [iconSize]; result is
+                // centered icon in a circle wide enough to fit.
+                iconSize: ICON_SIZE * ICON_WIDTH_RATIO,
                 tooltip:
                     'IconToo extends Icon but provides a trueSize SizedBox',
               ),
@@ -230,259 +233,224 @@ class _LandingState extends State<Landing> with TickerProviderStateMixin {
     );
   }
 
-  /// 👕 Returns the content on the main page of this example application.
-  Padding _buildBody() {
-    return Padding(
-      padding: const EdgeInsets.all(25.0),
-      child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            RichText(
-              text: TextSpan(
-                text: 'A nice, basic counter example\n'.toUpperCase(),
-                style: _overline,
-                children: [
-                  TextSpan(
-                    text: 'Number of ',
-                    style: _headline4,
-                  ),
-                  TextSpan(
-                    text: '~',
-                    style: _headline4
-                        .merge(TextStyle(fontFamily: 'BashinBugs-Stripped')),
-                  ),
-                  TextSpan(text: '\nbutton presses:', style: _headline4),
-                ],
-              ),
-            ),
-            AnimatedContainer(
-              duration: _DURATION,
-              curve: Curves.easeInExpo,
-              padding: const EdgeInsets.all(25.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100),
-                color: Theme.of(context).primaryColor.withOpacity(0.25),
-                backgroundBlendMode: BlendMode.difference,
-              ),
-              child: Text(
-                (_counter < 10)
-                    ? '0' + _counter.toString()
-                    : _counter.toString(),
-                style: _headline1,
-              ),
-            ),
-            Spacer(),
-            Flexible(
-              child: Text(
-                'ICON_SIZE = $_ICON_SIZE\nICON_WIDTH_RATIO = $_ICON_WIDTH_RATIO',
-                style: _technical.copyWith(fontSize: 24),
-              ),
-            ),
-            Flexible(
-              child: Text(
-                'The IconData used in this example, [CustomIcons.logo_bugbash], is four times wider than it is tall. Literally, the width of the glyph is 4000 while others typically have a width of 1000.',
-                style: _overline.copyWith(
-                  letterSpacing: -0.25,
-                  fontSize: 18,
-                  color: const Color(0xDDFFFFFF),
-                ),
-              ),
-            ),
-          ]),
-    );
-  }
-
-  /// 🔤 Returns a short Column requiring a String [label]
-  /// styled by a required [textStyle]
-  /// followed by a required but named [child].
+  /// 🔘 Set-up [IconButton] with matching parameters.
   ///
-  /// In the case of this example,
-  /// the [child] pass will be an [_buildIconButton].
-  Widget _buildFAB(
-    String label, {
-    required TextStyle textStyle,
-    required Widget child,
-  }) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          style: textStyle,
-        ),
-        child,
-      ],
-    );
-  }
-
-  /// 🔘 Returns a partially-transparent black Container
-  /// whose child is an [IconButton] with passed [icon] and
-  /// [iconSize] that onPressed calls [_incrementCounter].
-  Widget _buildIconButton({
+  /// Builds a black [Container] whose `child`
+  /// is an [IconButton] with provided [icon], [iconSize], and [tooltip],
+  /// that `onPressed` calls [incrementCounter].
+  Widget buildIconButton({
     required Icon icon,
     required double iconSize,
     required String tooltip,
-  }) {
-    return IgnorePointer(
-      ignoring: (_demo2Icon == _ICON_CLOSE),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(100),
+  }) =>
+      Container(
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
           color: Colors.black38,
         ),
         child: IconButton(
           icon: icon,
           iconSize: iconSize,
           tooltip: tooltip,
-          onPressed: _incrementCounter,
+          onPressed: incrementCounter,
         ),
-      ),
-    );
-  }
+      );
 
-  /// 2️⃣ Sizes Demo 2 into view according to value of [_demo2Icon]
-  Widget _buildDemo2() {
-    /// Icon Key #id, increments with every Icon
-    var i = 0;
+  /// 🔤 Builds a short [Column] requiring a
+  /// [label] styled by [textStyle] and a [child]; which, in the case
+  /// of this example, will be [buildIconButton].
+  ///
+  /// Ignore touch input with [IgnorePointer] if 2️⃣ Demo2 is open.
+  Widget buildFAB({
+    required String label,
+    required TextStyle textStyle,
+    required Widget child,
+  }) =>
+      IgnorePointer(
+        ignoring: (demo2Icon == DEMO2_IS_OPEN),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: textStyle,
+            ),
+            child,
+          ],
+        ),
+      );
 
-    /// Just a List of IconData.
-    const icons = [
-      Icons.ac_unit,
-      Icons.access_alarm,
-      Icons.accessibility,
-      CustomIcons.logo_bugbash,
-      Icons.accessible_forward,
-      Icons.account_balance_wallet,
-      Icons.account_box,
-      Icons.account_tree,
-      Icons.adb,
-      Icons.agriculture,
-      Icons.wine_bar,
-      Icons.whatshot,
-      Icons.weekend,
-      Icons.android,
-      Icons.assistant,
-      CustomIcons.logo_bugbash,
-      Icons.anchor,
-      Icons.all_inclusive,
-      Icons.looks,
-      Icons.local_parking,
-      Icons.design_services
-    ];
-
-    Expanded _buildHeader({required String technicalText}) {
-      return Expanded(
-        flex: 2,
-        child: RichText(
-          textAlign: TextAlign.center,
-          text: TextSpan(
-            text: 'Wrapping ',
-            style: _headline4,
+  /// 👕 Returns the content on the main page of this example application.
+  ///
+  /// Will be obscured if 2️⃣ Demo2 is open.
+  Padding buildBody() => Padding(
+        padding: const EdgeInsets.all(25.0),
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextSpan(
-                text: technicalText,
-                style: _technical.copyWith(
-                  fontSize: _headline4.fontSize,
+              RichText(
+                text: TextSpan(
+                  text: 'A nice, basic counter example\n'.toUpperCase(),
+                  style: overline,
+                  children: [
+                    TextSpan(
+                      text: 'Number of ',
+                      style: headline4,
+                    ),
+                    TextSpan(
+                      text: '~',
+                      style: headline4
+                          .merge(TextStyle(fontFamily: 'BashinBugs-Stripped')),
+                    ),
+                    TextSpan(text: '\nbutton presses:', style: headline4),
+                  ],
                 ),
               ),
-              const TextSpan(text: 's\n'),
-              TextSpan(
-                text: 'with intermittent non-square IconData',
-                style: _headline4.copyWith(fontSize: 16),
-              )
-            ],
+              AnimatedContainer(
+                duration: DURATION,
+                curve: Curves.easeInExpo,
+                padding: const EdgeInsets.all(25.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  color: Theme.of(context).primaryColor.withOpacity(0.25),
+                  backgroundBlendMode: BlendMode.difference,
+                ),
+                child: Text(
+                  (_counter < 10)
+                      ? '0' + _counter.toString()
+                      : _counter.toString(),
+                  style: headline1,
+                ),
+              ),
+              Spacer(),
+              Flexible(
+                child: Text(
+                  'ICON_SIZE = $ICON_SIZE\nICON_WIDTH_RATIO = $ICON_WIDTH_RATIO',
+                  style: technical.copyWith(fontSize: 24),
+                ),
+              ),
+              Flexible(
+                child: Text(
+                  'The IconData used in this example, [CustomIcons.logo_bugbash], is four times wider than it is tall. Literally, the width of the glyph is 4000 while others typically have a width of 1000.',
+                  style: overline.copyWith(
+                    letterSpacing: -0.25,
+                    fontSize: 18,
+                    color: const Color(0xDDFFFFFF),
+                  ),
+                ),
+              ),
+            ]),
+      );
+
+  /// 2️⃣ Sizes Demo 2 into view according to value of [demo2Icon].
+  ///
+  /// TODO: Make Demo2 a separate `class`.
+  Widget maybeBuildDemo2() {
+    // Icon Key #id, increments with every Icon
+    var i = 0;
+
+    // This method will be used twice, once for `Icon`s and again for `IconToo`s.
+    Expanded buildDemo2Wrap({required List<Icon> children}) =>
+        Expanded(flex: 5, child: Wrap(children: children));
+
+    // A set-up RichText, ready for a single `String`.
+    Expanded buildDemo2Header({required String technicalText}) => Expanded(
+          flex: 2,
+          child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              text: 'Wrapping ',
+              style: headline4,
+              children: [
+                TextSpan(
+                  text: technicalText,
+                  style: technical.copyWith(
+                    fontSize: headline4.fontSize,
+                  ),
+                ),
+                const TextSpan(text: 's\n'),
+                TextSpan(
+                  text: 'with intermittent non-square IconData',
+                  style: headline4.copyWith(fontSize: 16),
+                )
+              ],
+            ),
           ),
-        ),
-      );
-    }
+        );
 
-    Expanded _buildWrap({required List<Icon> children}) {
-      return Expanded(
-        flex: 5,
-        child: Wrap(
-          children: children,
-        ),
-      );
-    }
-
-    Widget _buildDemo({required Widget child}) {
-      return Align(
-        alignment: Alignment.topCenter,
-        child: BackdropFilter(
-          filter: (_demo2Icon == _ICON_CLOSE)
-              ? ImageFilter.blur(sigmaX: 5, sigmaY: 5)
-              : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-          child: Material(
-            color: Theme.of(context).backgroundColor.withOpacity(0.5),
-            animationDuration: _DURATION,
-            elevation: 50,
-            child: InkWell(
-              highlightColor: Colors.transparent,
-              splashColor: Theme.of(context).primaryColor.withOpacity(0.75),
-              onTap: () => setState(() {}),
-              child: AnimatedContainer(
-                width: _width,
-                height: (_demo2Icon == _ICON_CLOSE) ? _height : 0,
-                duration: _DURATION,
-                curve: _CURVE,
-                padding: const EdgeInsets.all(25),
-                child: child,
+    // An aligned Material surface with InkWell and BackdropFilter.
+    Widget buildDemo2Body({required Widget child}) => Align(
+          alignment: Alignment.topCenter,
+          child: BackdropFilter(
+            filter: (demo2Icon == DEMO2_IS_OPEN)
+                ? ImageFilter.blur(sigmaX: 5, sigmaY: 5)
+                : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
+            child: Material(
+              color: Theme.of(context).backgroundColor.withOpacity(0.5),
+              animationDuration: DURATION,
+              elevation: 50,
+              child: InkWell(
+                highlightColor: Colors.transparent,
+                splashColor: Theme.of(context).primaryColor.withOpacity(0.75),
+                onTap: () => setState(() {}),
+                child: AnimatedContainer(
+                  width: width,
+                  height: (demo2Icon == DEMO2_IS_OPEN) ? height : 0,
+                  duration: DURATION,
+                  curve: CURVE,
+                  padding: const EdgeInsets.all(25),
+                  child: child,
+                ),
               ),
             ),
           ),
-        ),
-      );
-    }
+        );
 
-    return _buildDemo(
+    /// Return the built 2️⃣ Demo2.
+    return buildDemo2Body(
       child: Column(
-        children: (_demo2Icon == _ICON_OPEN)
-            ? []
+        children: (demo2Icon == DEMO2_IS_CLOSED)
+            ? const []
             : <Widget>[
                 /// 🛑 Wrapping [Icon]s
-                _buildHeader(technicalText: 'Icon'),
-
-                _buildWrap(
+                buildDemo2Header(technicalText: 'Icon'),
+                buildDemo2Wrap(
                   children: <Icon>[
-                    for (IconData icon in icons)
+                    for (IconData icon in ICONS)
                       Icon(
                         icon,
                         size: 50,
-                        // size: (_demo2Icon == _ICON_CLOSE) ? 50 : 10,
-                        semanticLabel: 'an Icon by Flutter',
                         key: Key('Icon#${i++}:$icon:'),
-
-                        /// Random MaterialColor with 50% opacity to show overlap
-                        color: Colors.primaries[Random().nextInt(
-                          Colors.accents.length,
-                        )]
+                        semanticLabel: 'an Icon from Flutter',
+                        // Random MaterialColor with 50% opacity to show overlap
+                        color: Colors
+                            .primaries[Random().nextInt(Colors.accents.length)]
                             .withOpacity(0.5),
                       )
                   ],
                 ),
 
                 /// 🆕 Wrapping [IconToo]s
-                _buildHeader(technicalText: 'IconToo'),
-
-                _buildWrap(
+                buildDemo2Header(technicalText: 'IconToo'),
+                buildDemo2Wrap(
                   // [IconToo]s extend [Icon]
                   children: <Icon>[
-                    for (IconData icon in icons)
+                    for (IconData icon in ICONS)
                       IconToo(
                         icon,
-                        trueSize: (icon == CustomIcons.logo_bugbash)
-                            ? Size(50 * _ICON_WIDTH_RATIO, 50)
-                            : Size(50, 50),
-                        semanticLabel: 'an Icon Too from package Icon',
+                        sizeX: (icon == CustomIcons.logo_bugbash)
+                            ? 50 * ICON_WIDTH_RATIO
+                            : 50,
+                        sizeY: 50,
                         key: Key('IconToo#${i++}:$icon:'),
-
-                        /// Random MaterialColor with 50% opacity to show overlap
-                        color: Colors.primaries[Random().nextInt(
-                          Colors.accents.length,
-                        )]
+                        semanticLabel: 'an IconToo from package Icon',
+                        // Random MaterialColor with 50% opacity to show overlap
+                        color: Colors
+                            .primaries[Random().nextInt(Colors.accents.length)]
                             .withOpacity(0.5),
+                        // 👥 Yay, shadows! This List is `const` which saves memory.
                         shadows: const [
                           Shadow(
                             color: Colors.black38,
@@ -494,13 +462,13 @@ class _LandingState extends State<Landing> with TickerProviderStateMixin {
                   ],
                 ),
 
-                /// Tip about `shadows` support
+                // Tip about `shadows` support
                 Flexible(
                   child: Text(
-                    '✨ Plus Customizable Shadows!\nTap \'n hold to preview with a brighter background.',
+                    '👥 Plus custom shadows!\nTap \'n hold to preview with a brighter background.',
                     textAlign: TextAlign.center,
-                    style: _overline.copyWith(
-                        letterSpacing: 0.6, shadows: _SHADOWS),
+                    style:
+                        overline.copyWith(letterSpacing: 0.6, shadows: SHADOWS),
                   ),
                 ),
               ],
@@ -509,26 +477,26 @@ class _LandingState extends State<Landing> with TickerProviderStateMixin {
   }
 
   /// 🌆 Loads a nice space picture from [APOD](https://apod.nasa.gov 'NASA APOD'),
-  /// and when it has, fades this image in, fitted to cover the display.
-  Image _buildBackground() {
-    return Image.network(
-      'https://apod.nasa.gov/apod/image/2101/NGC1316Center_HubbleNobre_2585.jpg',
+  /// and when it has, fades this image in, fit to cover the display.
+  Image buildBackground() => Image.network(
+        'https://apod.nasa.gov/apod/image/2101/NGC1316Center_HubbleNobre_2585.jpg',
+        // Stretch the photo to the size of the app.
+        fit: BoxFit.cover,
+        width: width,
+        height: height,
 
-      /// This frameBuilder simply fades in the photo when it loads.
-      frameBuilder: (_, child, frame, wasLoadedSync) {
-        if (wasLoadedSync) return child;
-        return AnimatedOpacity(
-          child: child,
-          opacity: frame == null ? 0 : 1,
-          duration: _DURATION,
-          curve: _CURVE,
-        );
-      },
-
-      /// Stretch the photo to the size of the app.
-      fit: BoxFit.cover,
-      width: _width,
-      height: _height,
-    );
-  }
+        // This frameBuilder fades in the photo when it loads.
+        //
+        // A static picture has `1` frame, but `null` if it is not loaded.
+        // (An animated GIF would have more than one frame, as an example.)
+        frameBuilder: (_, child, frame, wasLoaded) {
+          if (wasLoaded) return child; // Return picture if loaded, otherwise:
+          return AnimatedOpacity(
+            child: child,
+            opacity: frame == null ? 0 : 1, // `frame==null` before loading
+            duration: DURATION, // Fade from 0->1 `opacity` over this duration
+            curve: CURVE, // Curves describe the "shape" or "how" of animation
+          );
+        },
+      );
 }
