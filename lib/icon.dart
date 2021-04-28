@@ -6,10 +6,10 @@
 /// plus 👥 [shadows] support.
 ///
 /// ---
-///     const IconToo(icon, {key, trueSize?, sizeX?, sizeY?, color?, shadows?, alignment?, semanticLabel?, textDirection?})
+///     const IconToo(icon, {key, sizeX?, sizeY?, color?, shadows?, alignment?, semanticLabel?, textDirection?})
 ///
 /// - Builds an `Icon`-akin widget set inside a `SizedBox`
-///   of `sizeX` and `sizeY` (or `Size trueSize`) with given `icon` data.
+///   of `sizeX` and `sizeY` with given `icon` data.
 /// - Customize with optional 🎨 `color` or 👥 `shadows`, a `List<Shadow>` like `TextStyle`.
 /// - The `alignment` and `textDirection` are handled, but may be overridden if necessary.
 /// - Replete with proper [`Semantics`](https://api.flutter.dev/flutter/widgets/Semantics-class.html 'Flutter API: Semantics') and [debug `Property`s](https://api.flutter.dev/flutter/foundation/DoubleProperty-class.html 'Flutter API: DoubleProperty').
@@ -66,13 +66,12 @@
 ///     CustomIcons.non_square_icon,
 ///     // IconToo passes `fontSize: min(trueSize.width, trueSize.height)`,
 ///     // the shortest side (here: height), to glyph-rendering TextStyle:
-///     sizeX: 34.0 * 5.0,
+///     sizeX: 34.0 * 5.0, // Glyph is 5 times wider than tall
 ///     sizeY: 34.0,
-///     // trueSize: Size(34.0 * 5.0, 34.0), // this works, too
 ///   ),
 ///   // But the max(), or longest side, is needed to ensure an
 ///   // IconButton has a diameter that encompasses the entire IconToo:
-///   iconSize: 34.0 * 5.0, // longest side, here: width
+///   iconSize: 34.0 * 5.0, // IconToo.asSize.longestSize
 ///   onPressed: () {},
 /// );
 /// ```

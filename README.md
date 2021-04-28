@@ -12,10 +12,15 @@
 ... because Flutter's native [`Icon`](https://api.flutter.dev/flutter/widgets/Icon-class.html 'Flutter API: Icon') ["assumes that the rendered icon is squared"](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L24) and that ["non-squared icons may render incorrectly."](https://github.com/flutter/flutter/blob/f2a25c5bd2de39a80246370ad53c5bf2e93c81be/packages/flutter/lib/src/widgets/icon.dart#L25)
 
 ```dart
-const IconToo(IconData icon, {Key? key, Size? trueSize, double? sizeX, double? sizeY,
+const IconToo(IconData icon, {Key? key, 🕳️, double? sizeX, double? sizeY,
     Color? color, List<Shadow>? shadows, AlignmentGeometry? alignment,
     String? semanticLabel, TextDirection? textDirection})
 ```
+> ## 🕳️
+> #### Deprecated. Adopt `double`s [`sizeX`](https://pub.dev/documentation/icon/latest/icon/IconToo/sizeX.html 'Icon API: sizeX') and [`sizeY`](https://pub.dev/documentation/icon/latest/icon/IconToo/sizeY.html 'Icon API: sizeY').
+> ### ~~```Size? trueSize```~~
+
+&nbsp;
 
 Builds an [`Icon`](https://api.flutter.dev/flutter/widgets/Icon-class.html 'Flutter API: Icon')-akin widget set inside a [`SizedBox`](https://api.flutter.dev/flutter/widgets/SizedBox-class.html 'Flutter API: SizedBox') constrained by [`sizeX`](https://pub.dev/documentation/icon/latest/icon/IconToo/sizeX.html 'Icon API: sizeX') and [`sizeY`](https://pub.dev/documentation/icon/latest/icon/IconToo/sizeY.html 'Icon API: sizeY') with given [`icon`](https://pub.dev/documentation/icon/latest/icon/IconToo/icon.html 'Icon API: icon') data.
 
@@ -45,9 +50,8 @@ final wideButton = IconButton(
     CustomIcons.non_square_icon,
     // IconToo passes `fontSize: min(trueSize.width, trueSize.height)`,
     // the shortest side (here: height), to glyph-rendering TextStyle:
-    sizeX: 34.0 * 5.0,
+    sizeX: 34.0 * 5.0, // Glyph is 5 times wider than tall
     sizeY: 34.0,
-    // trueSize: DEPRECATED
   ),
   // But the max(), or longest side, is needed to ensure an
   // IconButton has a diameter that encompasses the entire IconToo:
@@ -64,6 +68,7 @@ See some example usage of the `icon` package:
 &nbsp;
 
 ## 🗜️ Icon Utilities
+Icon Example - [Demo 3: 🗜️ `Icon` `Operator` Utilities](https://github.com/Zabadam/icon_too/tree/main/example/lib/demo3.dart): `/example/lib/demo3.dart`
 - 📋 `copyWith` optional replacement values
 - 👆 `operator >(VoidCallback onTap)` ➡ `IconButton`
 - ➕ `operator +(inflate)` ➡ `size += inflation`
@@ -77,6 +82,7 @@ See some example usage of the `icon` package:
   - ❓ `padding is List<num>` (length==4) ➡ `EdgeInsets.fromLTRB(padding[0], padding[1],padding[2], padding[3])`
 
 ## 🗜️ IconToo Utilities
+Icon Example - [Demo 3: 🗜️ `Icon` `Operator` Utilities](https://github.com/Zabadam/icon_too/tree/main/example/lib/demo3.dart): `/example/lib/demo3.dart`
 - 📋 `copyWith` optional replacement values
 - 👆 `operator >(VoidCallback onTap)` ➡ `IconButton`
 - ➕ `operator +(inflate)` ➡ `sizeX += inflation` & `sizeY += inflation`

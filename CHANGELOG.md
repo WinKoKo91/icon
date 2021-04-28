@@ -1,6 +1,6 @@
 # 🙋‍♂️ Icon
-## **[2.2.0+1] - 27 APR 21**
-- "`2.2.0-oopsie`" - massively reduced package size with `flutter clean`.
+## **[2.2.1] - 27 APR 21**
+- Removing references to deprecated ~~trueSize~~.
 
 ## **[2.2.0] - 27 APR 21**
 - 🆕 methods for an `IconToo` offering 📋 `copyWith` and `operator` overrides:

@@ -64,11 +64,6 @@ import 'package:flutter/material.dart' show IconButton;
 /// > ***NOTE:***
 /// > *All the boxes are checked as far as the parameters for which a*
 /// > *standard [Icon] looks and the accessibility & debug features they offer.*
-/// >
-/// > As a design choice, the `super` [Icon] receives `this` [IconToo]'s
-/// initialized `sizeX ?? sizeY` as [Icon.size].
-/// > - First considers the `width` of the icon, and may not always be the
-/// > "longest side" of any potential non-square [IconData].
 ///
 /// > ***SEE ALSO:***
 /// > *[Icon], for a description on what an "`Icon`" **is** and*
@@ -92,9 +87,10 @@ class IconToo extends Icon {
   /// - See [alignment] for more information.
   ///
   /// Assumed to be wide, `super` [Icon.size] is assigned [_sizeX] `??` [_sizeY].
-  /// - This affects situations that look for an [Icon.size], like [IconButton]
+  /// - This affects situations that look for an [Icon.size]
   /// - A solution for taller icons exists: [IconToo.tall]
-  ///   - Where the only difference is the order of assignment to [Icon.size]: [_sizeY] `??` [_sizeX]
+  ///   - Where the only difference is the order of assignment,
+  ///   [Icon.size]: [_sizeY] `??` [_sizeX]
   ///
   /// Replete with proper [`Semantics`](https://api.flutter.dev/flutter/widgets/Semantics-class.html 'Flutter API: Semantics') and [debug `Property`s](https://api.flutter.dev/flutter/foundation/DoubleProperty-class.html 'Flutter API: DoubleProperty').
   ///
@@ -106,9 +102,8 @@ class IconToo extends Icon {
   ///     CustomIcons.non_square_icon,
   ///     // IconToo passes `fontSize: min(trueSize.width, trueSize.height)`,
   ///     // the shortest side (here: height), to glyph-rendering TextStyle:
-  ///     sizeX: 34.0 * 5.0,
+  ///       sizeX: 34.0 * 5.0, // Glyph is 5 times wider than tall
   ///     sizeY: 34.0,
-  ///     // trueSize: DEPRECATED
   ///   ),
   ///   // But the max(), or longest side, is needed to ensure an
   ///   // IconButton has a diameter that encompasses the entire IconToo:
@@ -119,11 +114,6 @@ class IconToo extends Icon {
   /// > ***NOTE:***
   /// > *All the boxes are checked as far as the parameters for which a*
   /// > *standard [Icon] looks and the accessibility & debug features they offer.*
-  /// >
-  /// > As a design choice, the `super` [Icon] receives `this` [IconToo]'s
-  /// initialized `sizeX ?? sizeY` as [Icon.size].
-  /// > - First considers the `width` of the icon, and may not always be the
-  /// > "longest side" of any potential non-square [IconData].
   ///
   /// > ***SEE ALSO:***
   /// > *[Icon], for a description on what an "`Icon`" **is** and*
@@ -140,7 +130,7 @@ class IconToo extends Icon {
     this.semanticLabel,
     this.textDirection,
   })  : assert((sizeX ?? 0) >= 0 && (sizeY ?? 0) >= 0,
-            'Provide non-negative dimensions.'),
+            '[IconToo] > Provide non-negative dimensions.'),
         _sizeX = sizeX,
         _sizeY = sizeY,
         _trueSize = trueSize,
@@ -179,7 +169,7 @@ class IconToo extends Icon {
     this.semanticLabel,
     this.textDirection,
   })  : assert((sizeX ?? 0) >= 0 && (sizeY ?? 0) >= 0,
-            'Provide non-negative dimensions.'),
+            '[IconToo.tall] > Provide non-negative dimensions.'),
         _sizeX = sizeX,
         _sizeY = sizeY,
         _trueSize = trueSize,
@@ -204,13 +194,6 @@ class IconToo extends Icon {
   /// (or [sizeX] x [sizeY]) with [Semantics] in place.
   final IconData? icon;
 
-  /// 🧮 True size to provide as space for the glyph in logical pixels.
-  /// May be `null`. Private field may be set during construction by `trueSize`.
-  ///
-  /// See [sizeX] and [sizeY].
-  @Deprecated(_DEPRECATED)
-  final Size? _trueSize;
-
   /// 🧮 Size in logical pixels to provide as space
   /// for this `IconToo` in one axis. May be `null`.
   /// Private field may be set during construction by `sizeX` / `sizeY`.
@@ -229,16 +212,11 @@ class IconToo extends Icon {
   /// Accepts `List<Shadow>`. See [Shadow] for more information.
   final List<Shadow>? shadows;
 
-  /// 🔛 This [IconToo  will side-align its glyph
+  /// 🔛 This [IconToo]  will side-align its glyph
   /// according to ambient or assigned [textDirection].
   ///
-  /// Considering it is also [trueSize]d by design,
-  /// default should be a desirable result,
-  /// but override this value if necessary.
-  /// - For example, because an initialized [_sizeX] is the value
-  ///   provided to `super` [Icon.size], manual setting could arise
-  ///   as a solution to some unforeseen issue.
-  /// - Furthermore, an [IconToo.tall] is dictated as taller rather than wider.
+  /// Considering it is also [trueSize]d by design, default should be
+  /// a desirable result, but override this value if necessary.
   ///
   /// A standard [Icon] centers its [IconData] glyph in a square [SizedBox],
   /// which is the root issue for non-square [icon]s.
@@ -260,36 +238,38 @@ class IconToo extends Icon {
   /// * or, if `null`, deafulting to [Directionality.of].
   final TextDirection? textDirection;
 
-  /// 🧮 Horizontal size in logical pixels to provide as space for this `IconToo`.
+  /// 🧮 Horizontal size, or width, in logical pixels
+  /// to provide as space for this `IconToo`.
+  /// Gets [_sizeX] if assigned. May be `null`.
+  ///
+  /// ~~Will consider [_trueSize] prior to [_sizeX], but is deprecated.~~
   ///
   /// Unlike an [Icon.size] this `double` only represents
   /// the resolution of in one axis, `X`.
-  ///
-  /// Gets [_trueSize.width] if initialized,
-  /// otherwise gets [_sizeX] if assigned. May be `null`.
   ///
   /// Rendered [IconToo] defaults to the current [IconTheme.of] size,
   /// if any, itself defaulting to `24.0`.
   double? get sizeX => _trueSize?.width ?? _sizeX;
 
-  /// 🧮 Vertical size in logical pixels to provide as space for this `IconToo`.
+  /// 🧮 Vertical size, or height, in logical pixels
+  /// to provide as space for this `IconToo`.
+  /// Gets [_sizeY] if assigned. May be `null`.
+  ///
+  /// ~~Will consider [_trueSize] prior to [_sizeX], but is deprecated.~~
   ///
   /// Unlike an [Icon.size] this `double` only represents
   /// the resolution of in one axis, `Y`.
-  ///
-  /// Gets [_trueSize.height] if initialized,
-  /// otherwise gets [_sizeY] if assigned. May be `null`.
   ///
   /// Rendered [IconToo] defaults to the current [IconTheme.of] size,
   /// if any, itself defaulting to `24.0`.
   double? get sizeY => _trueSize?.height ?? _sizeY;
 
   /// 🧮 Returns this [IconToo]'s size as a [Size] with
-  /// width equal to [sizeX], or `0` if `null`,
-  /// and height equal to [sizeY], or `0` if `null`.
+  /// width equal to [sizeX], or `0.0` if `null`,
+  /// and height equal to [sizeY], or `0.0` if `null`.
   ///
   /// [Size] objects have a few handy getters and methods.
-  Size get asSize => Size(sizeX ?? 0, sizeY ?? 0);
+  Size get asSize => Size(sizeX ?? 0.0, sizeY ?? 0.0);
 
   /// 👷‍♂️ Method responsible for laying-out and rendering an [IconToo],
   /// unique from an [Icon] in that [icon] may be non-square and [shadows]
@@ -308,8 +288,7 @@ class IconToo extends Icon {
 
     // A standard Icon uses its `size` field for
     // both width and height. Even without IconData, an IconToo
-    // still ought to consider that a `trueSize` may have been initialized
-    // for the Semantics and spacing.
+    // still ought to consider "true size" for Semantics and spacing.
     if (icon == null) {
       return Semantics(
         label: semanticLabel,
@@ -326,7 +305,7 @@ class IconToo extends Icon {
     // In the context of Icons, IconButtons, and IconData,
     // the "icon" itself is a character code for a specific font.
     Widget iconGlyph = RichText(
-      overflow: TextOverflow.visible, // Even though we're `trueSize`d ;)
+      overflow: TextOverflow.visible, // Though `trueSize`d, could be bad values
       textDirection: iconDirection,
       text: TextSpan(
         text: String.fromCharCode(icon!.codePoint),
@@ -336,7 +315,7 @@ class IconToo extends Icon {
           fontFamily: icon!.fontFamily,
           fontSize: fontSize,
           color: iconColor,
-          shadows: shadows ?? const [], // optional 👥 List<Shadow>
+          shadows: shadows, // optional 👥 List<Shadow>
         ),
       ),
     );
@@ -561,7 +540,7 @@ class IconToo extends Icon {
   /// ```dart
   /// final IconToo icon = IconToo(Icons.arrow_back, sizeX: 40, sizeY: 40);
   /// // Whoa! `operator >(onTap)` method 😏
-  /// final IconButton button = icon * Colors.red > () => setState(() {});
+  /// final IconButton button = baseIcon * Colors.red > () => setState(() {});
   /// ```
   IconButton operator >(VoidCallback onTap) => IconButton(
         icon: this,
@@ -569,6 +548,13 @@ class IconToo extends Icon {
         color: color,
         onPressed: onTap,
       );
+
+  /// 🧮 True size to provide as space for the glyph in logical pixels.
+  /// May be `null`. Private field may be set during construction by `trueSize`.
+  ///
+  /// See [sizeX] and [sizeY].
+  // @Deprecated(_DEPRECATED)
+  final Size? _trueSize;
 }
 
 const _DEPRECATED =

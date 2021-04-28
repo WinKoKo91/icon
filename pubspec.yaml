@@ -1,9 +1,8 @@
 name: icon
-description: An extended Icon "too" for those that are not actually square, plus shadows support + neat Icon extension utilities.
-version: 2.2.0+1
+description: An extended Icon "too" for those that are not actually square, plus shadows support + neat Icon extension operators.
+version: 2.2.1
 repository: https://github.com/Zabadam/icon
 issue_tracker: https://github.com/Zabadam/icon/issues
-# +5
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
