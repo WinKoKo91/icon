@@ -30,6 +30,10 @@
 /// - 💥 `operator %(dynamic modulation)`
 ///   - ❓ `modulation is List<Color>` ➡ `color = modulation[Random()]`
 ///   - ❓ `modulation is List<num>` ➡ `sizeX *= modulation[random]` & `sizeY *= modulation[random]`
+/// 🧦 `operator &(dynamic padding)`
+/// - ❓ `padding is num` ➡ `EdgeInsets.all(padding)`
+/// - ❓ `padding is List<num>` (length==2) ➡ `EdgeInsets.symmetric(horizontal: padding[0], vertical: padding[1])`
+/// - ❓ `padding is List<num>` (length==4) ➡ `EdgeInsets.fromLTRB(padding[0], padding[1],padding[2], padding[3])`
 ///
 /// ## 🗜️ IconToo Utilities
 /// 📋 `copyWith`

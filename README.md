@@ -48,7 +48,7 @@ Replete with proper [`Semantics`](https://api.flutter.dev/flutter/widgets/Semant
 final wideButton = IconButton(
   icon: const IconToo(
     CustomIcons.non_square_icon,
-    // IconToo passes `fontSize: min(trueSize.width, trueSize.height)`,
+    // IconToo passes `fontSize: min(sizeX, sizeY)`,
     // the shortest side (here: height), to glyph-rendering TextStyle:
     sizeX: 34.0 * 5.0, // Glyph is 5 times wider than tall
     sizeY: 34.0,

@@ -1,14 +1,4 @@
 /// ## 🗜️ Icon Utilities
-/// - 📋 `copyWith`
-/// - 👆 "Chevron" `Icon > (VoidCallback onTap)` ➡ [IconButton]
-/// - ➕ `add`
-/// - ➖ `subtract`
-/// - ❌ `multiply`
-///   - ❓ `operation is Color`
-///   - ❓ `operation is num`
-/// - 💥 `modulate`
-///   - ❓ `modulation is List<Color>`
-///   - ❓ `modulation is List<num>`
 library icon;
 
 import 'dart:math' show Random;
@@ -46,21 +36,21 @@ extension IconUtils on Icon {
         textDirection: textDirection ?? this.textDirection,
       );
 
-  /// ## ➕ "Add" to [Icon]
+  /// ## ➕ "Add" to [Icon] (size)
   ///     Icon operator +(num inflation)
   /// Returns `this` [Icon] but [copyWith] an [icon.size] incremented by [inflation].
   ///
   /// ➕ ➡ `size += inflation`
   Icon operator +(num inflation) => copyWith(size: (size ?? 0) + inflation);
 
-  /// ## ➖ "Subtract" from [Icon]
+  /// ## ➖ "Subtract" from [Icon] (size)
   ///     Icon operator -(num deflation)
   /// Returns `this` [Icon] but [copyWith] an [icon.size] decremented by [deflation].
   ///
   /// ➖ ➡ `size -= deflation`
   Icon operator -(num deflation) => copyWith(size: (size ?? 0) + deflation);
 
-  /// ## ❌ "Multiply" an [Icon]
+  /// ## ❌ "Multiply" an [Icon] (color/size)
   ///     Icon operator *(dynamic operation)
   /// Returns `this` [Icon] if [operation] does not match a case described below.
   ///
@@ -73,7 +63,7 @@ extension IconUtils on Icon {
           ? copyWith(size: (size ?? 0) * operation)
           : this;
 
-  /// ## 💥 "Modulate" this [Icon] Randomly
+  /// ## 💥 "Modulate" this [Icon] (randomizer)
   ///     Icon operator %(dynamic modulation)
   /// Returns `this` [Icon] if [modulation] does not match a case described below.
   ///
@@ -92,7 +82,7 @@ extension IconUtils on Icon {
                     )
                   : this;
 
-  /// ## 🧦 "And" this [Icon]
+  /// ## 🧦 "And" this [Icon] (`Padding`)
   ///     Icon operator &(dynamic padding)
   /// Returns `this` [Icon] if [padding] does not match a case described below.
   ///
@@ -123,7 +113,7 @@ extension IconUtils on Icon {
                   : this
           : this;
 
-  /// ## 👆 "Chevron" this [Icon]
+  /// ## 👆 "Chevron" this [Icon] (`IconButton`)
   ///     Icon operator >(VoidCallback onTap)
   /// Returns `this` [Icon] wrapped in an [IconButton]
   /// with [size] for [IconButton.iconSize].
